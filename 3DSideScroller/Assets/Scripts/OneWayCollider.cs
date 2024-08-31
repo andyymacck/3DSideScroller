@@ -7,6 +7,7 @@ public class OneWayCollider : MonoBehaviour
 {
     [SerializeField] private Collider m_collider;
 
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
