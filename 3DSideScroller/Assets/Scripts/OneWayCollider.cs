@@ -1,31 +1,31 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
-public class OneWayCollider : MonoBehaviour
+namespace SideScroller
 {
-    [SerializeField] private Collider m_collider;
-
-
-    private void OnTriggerEnter(Collider other)
+    public class OneWayCollider : MonoBehaviour
     {
-        if (other.CompareTag("Player"))
+        [SerializeField] private Collider m_collider;
+
+
+        private void OnTriggerEnter(Collider other)
         {
-            ChangeColissionState(other, true);
+            if (other.CompareTag("Player"))
+            {
+                ChangeColissionState(other, true);
+            }
         }
-    }
 
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("Player"))
+        private void OnTriggerExit(Collider other)
         {
-            ChangeColissionState(other, false);
+            if (other.CompareTag("Player"))
+            {
+                ChangeColissionState(other, false);
+            }
         }
-    }
 
-    private void ChangeColissionState(Collider other, bool isEnable)
-    {
-        Physics.IgnoreCollision(other, m_collider, isEnable);
+        private void ChangeColissionState(Collider other, bool isEnable)
+        {
+            Physics.IgnoreCollision(other, m_collider, isEnable);
+        }
     }
 }

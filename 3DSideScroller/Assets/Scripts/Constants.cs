@@ -1,9 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class Constants : MonoBehaviour
+namespace SideScroller
 {
-    public const string GroundTagId = "Ground";
-    public const string PlatformTagId = "Platform";
+    public class Constants : MonoBehaviour
+    {
+        public const string GroundTagId = "Ground";
+        public const string PlatformTagId = "Platform";
+        public const string PlayerTagId = "Player";
+    }
 }
