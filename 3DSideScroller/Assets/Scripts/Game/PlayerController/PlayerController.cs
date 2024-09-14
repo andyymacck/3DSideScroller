@@ -11,6 +11,7 @@ namespace SideScroller
 
         private int m_jumpLimit = 2; // max jumps before ground the player
         private int m_jumpCount = 0;
+        private int m_jumpCountTotal = 0;
         private bool m_isGrounded = true;
 
         public Vector3 PlayerVelocity => m_rigidbody.velocity;
@@ -55,6 +56,9 @@ namespace SideScroller
                 m_rigidbody.AddForce(moveDir * m_forceJump, ForceMode.Impulse);
 
                 m_jumpCount++; // m_jumpCount = m_jumpCount + 1
+                m_jumpCountTotal++;
+
+                EventHub.Instance.Publish(new JumpEvent(m_jumpCountTotal));
             }
         }
 
@@ -70,6 +74,7 @@ namespace SideScroller
             {
                 m_jumpCount = 0;
                 m_isGrounded = true;
+                EventHub.Instance.Publish(new IsGroundedEvent(true));
             }
         }
 
@@ -78,6 +83,7 @@ namespace SideScroller
             if (IsCollided(collision, Constants.GroundTagId) || IsCollided(collision, Constants.PlatformTagId))
             {
                 m_isGrounded = false;
+                EventHub.Instance.Publish(new IsGroundedEvent(false));
             }
         }
 
