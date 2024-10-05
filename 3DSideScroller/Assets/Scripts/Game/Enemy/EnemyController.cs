@@ -65,4 +65,25 @@ public class EnemyController : Unit
             m_playerController.DealDamage(m_damage);
         }
     }
+
+    public override void DealDamage(float damage)
+    {
+        if (!m_isAlive)
+        {
+            return;
+        }
+
+        m_health -= damage;
+        m_isAlive = m_health > 0f;
+
+        if (m_isAlive == false)
+        {
+            Die();
+        }
+    }
+
+    public override void Die()
+    {
+        Destroy(gameObject);
+    }
 }

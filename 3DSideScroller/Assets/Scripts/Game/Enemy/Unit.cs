@@ -1,32 +1,14 @@
 using UnityEngine;
 
-public class Unit : MonoBehaviour
+public abstract class Unit : MonoBehaviour
 {
-    [SerializeField] private float m_health = 100f;
+    [SerializeField] protected float m_health = 100f;
 
-    private bool m_isAlive = true;
+    protected bool m_isAlive = true;
 
     public bool IsAlive => m_isAlive;
 
+    public abstract void DealDamage(float damage);
 
-    public void DealDamage(float damage)
-    {
-        if (!m_isAlive)
-        {
-            return;
-        }
-
-        m_health -= damage;
-        m_isAlive = m_health > 0f;
-
-        if(m_isAlive == false)
-        {
-            Die();
-        }
-    }
-
-    public void Die()
-    {
-        Destroy(gameObject);
-    }
+    public abstract void Die();
 }
