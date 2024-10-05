@@ -3,7 +3,7 @@ using UnityEngine;
 namespace SideScroller
 {
     [RequireComponent(typeof(Rigidbody))]
-    public class PlayerController : MonoBehaviour
+    public class PlayerController : Unit
     {
         [SerializeField] private Rigidbody m_rigidbody;
         [SerializeField] private float m_forceMovement = 2f;
