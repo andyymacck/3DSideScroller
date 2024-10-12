@@ -1,5 +1,3 @@
-using UnityEngine;
-
 namespace SideScroller
 {
     public static class Constants
@@ -7,5 +5,6 @@ namespace SideScroller
         public const string GroundTagId = "Ground";
         public const string PlatformTagId = "Platform";
         public const string PlayerTagId = "Player";
+        public const string EnemyTagId = "Enemy";
     }
 }
