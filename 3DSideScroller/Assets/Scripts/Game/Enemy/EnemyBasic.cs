@@ -4,13 +4,13 @@ namespace SideScroller
 {
     public class EnemyBasic : Unit
     {
-        [SerializeField] private float m_moveSpeed = 2f;
         [Header("Attack param")]
         [SerializeField] private float m_attackRange = 1f;
         [SerializeField] private float m_idleRange = 5f;
         [SerializeField] private float m_attackDelay = 1f;
         [SerializeField] private float m_damage = 1f;
         [SerializeField] private Rigidbody m_rigidbody;
+        [SerializeField] private EnemyMovement m_enemyMovement;
 
         private GameObject m_playerObject;
         private Unit m_playerController;
@@ -22,21 +22,23 @@ namespace SideScroller
             SetPlayer(GameObject.FindGameObjectWithTag(Constants.PlayerTagId));
         }
 
-
         private void Update()
         {
             if (m_playerObject != null)
             {
                 float distanceToPlayer = Vector3.Distance(transform.position, m_playerObject.transform.position);
 
+                // update idle and partrol
+                // add enemy state kind of (idle, patroll, attack)
                 if (distanceToPlayer > m_idleRange)
                 {
+                    m_enemyMovement.Patrol();
                     return;
                 }
 
                 if (distanceToPlayer >= m_attackRange)
                 {
-                    MoveToPlayer(m_playerObject);
+                    m_enemyMovement.MoveToObject(m_playerObject);
                 }
 
                 if (distanceToPlayer < m_attackRange)
@@ -50,12 +52,6 @@ namespace SideScroller
         {
             m_playerObject = playerObject;
             m_playerController = playerObject.GetComponent<PlayerController>();
-        }
-
-        private void MoveToPlayer(GameObject player)
-        {
-            Vector3 dir = (player.transform.position - transform.position).normalized;
-            m_rigidbody.AddForce(new Vector3(dir.x, 0f, 0f) * m_moveSpeed);
         }
 
         private void Attack()
