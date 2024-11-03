@@ -11,11 +11,20 @@ namespace SideScroller
         [SerializeField] private float m_damage = 1f;
         [SerializeField] private Rigidbody m_rigidbody;
         [SerializeField] private EnemyMovement m_enemyMovement;
+        [SerializeField] private EnemyState m_currentState = EnemyState.Idle;
+
 
         private GameObject m_playerObject;
         private Unit m_playerController;
         private float m_lastAttackTime = 0f;
 
+        private enum EnemyState
+        {
+            Idle,
+            Patrol,
+            EnemyAproach,
+            Attack
+        }
 
         private void Start()
         {
@@ -24,29 +33,41 @@ namespace SideScroller
 
         private void Update()
         {
-            if (m_playerObject != null)
+            if (m_playerObject == null) return;
+
+            float distanceToPlayer = Vector3.Distance(transform.position, m_playerObject.transform.position);
+
+            // State transitions based on distance to player
+            if (distanceToPlayer > m_idleRange)
             {
-                float distanceToPlayer = Vector3.Distance(transform.position, m_playerObject.transform.position);
+                m_currentState = EnemyState.Patrol;
+            }
+            else if (distanceToPlayer >= m_attackRange && distanceToPlayer <= m_idleRange)
+            {
+                m_currentState = EnemyState.EnemyAproach;
+            }
+            else if (distanceToPlayer < m_attackRange)
+            {
+                m_currentState = EnemyState.Attack;
+            }
 
-                // update idle and partrol
-                // add enemy state kind of (idle, patroll, attack)
-                if (distanceToPlayer > m_idleRange)
-                {
+            // Actions based on the current state
+            switch (m_currentState)
+            {
+                case EnemyState.Patrol:
                     m_enemyMovement.Patrol();
-                    return;
-                }
+                    break;
 
-                if (distanceToPlayer >= m_attackRange)
-                {
+                case EnemyState.EnemyAproach:
                     m_enemyMovement.MoveToObject(m_playerObject);
-                }
+                    break;
 
-                if (distanceToPlayer < m_attackRange)
-                {
+                case EnemyState.Attack:
                     Attack();
-                }
+                    break;
             }
         }
+
 
         public void SetPlayer(GameObject playerObject)
         {

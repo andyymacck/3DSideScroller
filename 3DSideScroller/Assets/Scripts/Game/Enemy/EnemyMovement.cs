@@ -1,3 +1,5 @@
+using System;
+using System.Diagnostics;
 using UnityEngine;
 
 namespace SideScroller
@@ -13,23 +15,15 @@ namespace SideScroller
 
         [SerializeField] private Rigidbody m_rigidbody;
         [SerializeField] private float m_moveSpeed = 100f;
-        [SerializeField] private Transform[] m_wayPoints = new Transform[] { };
+        [SerializeField] private Waypoint[] m_wayPoints = new Waypoint[] { };
 
         [SerializeField] private PlatformMove m_loopMode;
         [SerializeField] private bool m_isMovingForward = true;
 
         private int m_platformIndex = 0;
+        private bool m_isWaiting = false;
+        private float m_waitTimer = 0f;
 
-
-        void Start()
-        {
-
-        }
-
-        void Update()
-        {
-
-        }
 
         public void MoveToObject(GameObject gameObject)
         {
@@ -49,53 +43,82 @@ namespace SideScroller
 
         public void Patrol()
         {
-            Vector3 targetPosition = m_wayPoints[m_platformIndex].position;
+            if (m_isWaiting)
+            {
+                m_waitTimer += Time.deltaTime;
 
+                if (m_waitTimer >= m_wayPoints[m_platformIndex].WaitTime)
+                {
+                    m_isWaiting = false;
+                    m_waitTimer = 0f;
+                }
+
+                return; // Stop movement while waiting
+            }
+
+            Vector3 targetPosition = m_wayPoints[m_platformIndex].WaypointTranform.position;
             MoveToPosition(targetPosition);
-            //Extract and specify axis options
-            float distance = Vector3.Distance(transform.position, targetPosition);
 
+            float distance = CalculateDistanceX(transform.position, targetPosition);
             if (distance < 0.1f)
             {
-                if (m_loopMode == PlatformMove.Random)
-                {
-                    m_platformIndex = GetRandomIndex();
-                    return;
-                }
+                m_isWaiting = true; // Start waiting
+                DetermineNextWaypoint();
+                m_rigidbody.velocity = Vector3.zero;
+            }
+        }
 
-                if (m_isMovingForward)
-                {
-                    m_platformIndex++;
+        private void DetermineNextWaypoint()
+        {
+            if (m_loopMode == PlatformMove.Random)
+            {
+                m_platformIndex = GetRandomIndex();
+                return;
+            }
 
-                    if (m_platformIndex >= m_wayPoints.Length)
+            if (m_isMovingForward)
+            {
+                m_platformIndex++;
+                if (m_platformIndex >= m_wayPoints.Length)
+                {
+                    if (m_loopMode == PlatformMove.Loop)
                     {
-                        if (m_loopMode == PlatformMove.Loop)
-                        {
-                            m_platformIndex = 0;
-                        }
-                        else if (m_loopMode == PlatformMove.PingPong)
-                        {
-                            m_platformIndex = m_wayPoints.Length - 1;
-                            m_isMovingForward = false;
-                        }
+                        m_platformIndex = 0;
+                    }
+                    else if (m_loopMode == PlatformMove.PingPong)
+                    {
+                        m_platformIndex = m_wayPoints.Length - 1;
+                        m_isMovingForward = false;
                     }
                 }
-                else
+            }
+            else
+            {
+                m_platformIndex--;
+                if (m_platformIndex < 0)
                 {
-                    m_platformIndex--;
-
-                    if (m_platformIndex < 0)
-                    {
-                        m_platformIndex = 1;
-                        m_isMovingForward = true;
-                    }
+                    m_platformIndex = 1;
+                    m_isMovingForward = true;
                 }
             }
         }
 
         private int GetRandomIndex()
         {
-            return Random.Range(0, m_wayPoints.Length);
+            return UnityEngine.Random.Range(0, m_wayPoints.Length);
         }
+
+        private float CalculateDistanceX(Vector3 posA, Vector3 posB)
+        {
+            float distance = Math.Abs(posA.x - posB.x);
+            return distance;
+        }
+    }
+
+    [Serializable]
+    public class Waypoint
+    {
+        public Transform WaypointTranform;
+        public float WaitTime; // Time in seconds to wait at this waypoint
     }
 }

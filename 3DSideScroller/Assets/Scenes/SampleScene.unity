@@ -1746,7 +1746,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1546778876}
-  m_Material: {fileID: 13400000, guid: 8a664afdd2b146c4487f1c6153a2acba, type: 2}
+  m_Material: {fileID: 13400000, guid: 23d761a298eba1c498029d32134e04cd, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -1821,7 +1821,7 @@ Transform:
   m_GameObject: {fileID: 1546778876}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -11.68, y: 2.53, z: 0}
+  m_LocalPosition: {x: -11.68, y: 1.63, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1846,6 +1846,7 @@ MonoBehaviour:
   m_damage: 1
   m_rigidbody: {fileID: 1546778878}
   m_enemyMovement: {fileID: 1546778884}
+  m_currentState: 0
 --- !u!114 &1546778884
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1861,9 +1862,12 @@ MonoBehaviour:
   m_rigidbody: {fileID: 1546778878}
   m_moveSpeed: 100
   m_wayPoints:
-  - {fileID: 695654113}
-  - {fileID: 1429773206}
-  - {fileID: 1402003527}
+  - WaypointTranform: {fileID: 695654113}
+    WaitTime: 1
+  - WaypointTranform: {fileID: 1429773206}
+    WaitTime: 2
+  - WaypointTranform: {fileID: 1402003527}
+    WaitTime: 3
   m_loopMode: 0
   m_isMovingForward: 1
 --- !u!1 &1696249593
