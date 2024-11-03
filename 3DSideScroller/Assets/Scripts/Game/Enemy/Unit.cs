@@ -4,7 +4,8 @@ namespace SideScroller
 {
     public abstract class Unit : MonoBehaviour
     {
-        [SerializeField] protected float m_health = 100f;
+        [SerializeField] protected float m_healthCurrent = 100f;
+        [SerializeField] protected float m_healthOnStart = 100f;
 
         protected bool m_isAlive = true;
 

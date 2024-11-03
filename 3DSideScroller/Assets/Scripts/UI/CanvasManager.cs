@@ -1,30 +1,26 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class CanvasManager : MonoBehaviour
 {
-    [SerializeField] private Text textJumpCount;
-    [SerializeField] private Text textIsGrounded;
+    [SerializeField] private Image m_healthBar;
+    [SerializeField] private TMP_Text m_healthText;
 
-    private void Start()
+    private void Awake()
     {
-        EventHub.Instance.Subcribe<JumpEvent>(UpdateJumpText);
-        EventHub.Instance.Subcribe<IsGroundedEvent>(UpdateIsGroundedText);
-    }
-
-    private void UpdateJumpText(JumpEvent eventData)
-    {
-        textJumpCount.text = $"JUMPS:{eventData.JumpsCount}";
-    }
-
-    private void UpdateIsGroundedText(IsGroundedEvent eventData)
-    {
-        textIsGrounded.text = $"IS GROUNDED:{eventData.IsGrounded}";    
+        EventHub.Instance.Subcribe<HealthChangeEvent>(UpdateHealth);
     }
 
     private void OnDestroy()
     {
-        EventHub.Instance.UnSubcribe<JumpEvent>(UpdateJumpText);
-        EventHub.Instance.UnSubcribe<IsGroundedEvent>(UpdateIsGroundedText);
+        EventHub.Instance.UnSubcribe<HealthChangeEvent>(UpdateHealth);
+    }
+
+    private void UpdateHealth(HealthChangeEvent eventData)
+    {
+        float healthFactor = eventData.CurrentHealth / eventData.MaxHealth;
+        m_healthBar.fillAmount = healthFactor;
+        m_healthText.text = $"{eventData.CurrentHealth} / {eventData.MaxHealth}";
     }
 }

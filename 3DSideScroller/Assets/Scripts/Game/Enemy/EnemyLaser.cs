@@ -78,8 +78,8 @@ namespace SideScroller
                 return;
             }
 
-            m_health -= damage;
-            m_isAlive = m_health > 0f;
+            m_healthCurrent -= damage;
+            m_isAlive = m_healthCurrent > 0f;
 
             if (!m_isAlive)
             {

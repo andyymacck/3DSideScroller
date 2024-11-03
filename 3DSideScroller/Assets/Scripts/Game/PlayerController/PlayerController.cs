@@ -20,11 +20,12 @@ namespace SideScroller
         private void Awake()
         {
             m_rigidbody = GetComponent<Rigidbody>();
+            m_healthCurrent = m_healthOnStart;
         }
 
-        void Start()
+        private void Start()
         {
-
+            EventHub.Instance.Publish(new HealthChangeEvent(m_healthCurrent, m_healthOnStart));
         }
 
         void FixedUpdate()
@@ -57,8 +58,6 @@ namespace SideScroller
 
                 m_jumpCount++; // m_jumpCount = m_jumpCount + 1
                 m_jumpCountTotal++;
-
-                EventHub.Instance.Publish(new JumpEvent(m_jumpCountTotal));
             }
         }
 
@@ -74,7 +73,6 @@ namespace SideScroller
             {
                 m_jumpCount = 0;
                 m_isGrounded = true;
-                EventHub.Instance.Publish(new IsGroundedEvent(true));
             }
         }
 
@@ -83,7 +81,6 @@ namespace SideScroller
             if (IsCollided(collision, Constants.GroundTagId) || IsCollided(collision, Constants.PlatformTagId))
             {
                 m_isGrounded = false;
-                EventHub.Instance.Publish(new IsGroundedEvent(false));
             }
         }
 
@@ -99,8 +96,10 @@ namespace SideScroller
                 return;
             }
 
-            m_health -= damage;
-            m_isAlive = m_health > 0f;
+            m_healthCurrent -= damage;
+            m_isAlive = m_healthCurrent > 0f;
+
+            EventHub.Instance.Publish(new HealthChangeEvent(m_healthCurrent, m_healthOnStart));
 
             if (m_isAlive == false)
             {
