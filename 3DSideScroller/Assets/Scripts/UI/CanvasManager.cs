@@ -4,12 +4,14 @@ using TMPro;
 
 public class CanvasManager : MonoBehaviour
 {
+    [SerializeField] private GameObject m_root;
     [SerializeField] private Image m_healthBar;
     [SerializeField] private TMP_Text m_healthText;
 
     private void Awake()
     {
         EventHub.Instance.Subcribe<HealthChangeEvent>(UpdateHealth);
+        m_root.SetActive(true);
     }
 
     private void OnDestroy()
