@@ -84,7 +84,7 @@ namespace SideScroller
 
         private void OnCollisionEnter(Collision collision)
         {
-            if (collision != null && collision.gameObject.CompareTag(Constants.PlayerTagId))
+            if (collision != null && collision.gameObject.CompareTag(Constants.PLAYER_TAG_ID))
             {
                 collision.gameObject.transform.SetParent(transform);
             }
@@ -92,7 +92,7 @@ namespace SideScroller
 
         private void OnCollisionExit(Collision collision)
         {
-            if (collision != null && collision.gameObject.CompareTag(Constants.PlayerTagId))
+            if (collision != null && collision.gameObject.CompareTag(Constants.PLAYER_TAG_ID))
             {
                 collision.gameObject.transform.SetParent(null);
             }

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace SideScroller
@@ -15,6 +16,9 @@ namespace SideScroller
         private bool m_isGrounded = true;
 
         public Vector3 PlayerVelocity => m_rigidbody.velocity;
+
+        public Action<Collider> OntriggerEnterEvent;
+        public Action<Collider> OntriggerExitEvent;
 
 
         private void Awake()
@@ -69,7 +73,7 @@ namespace SideScroller
 
         private void OnCollisionEnter(Collision collision)
         {
-            if (IsCollided(collision, Constants.GroundTagId) || IsCollided(collision, Constants.PlatformTagId))
+            if (IsCollided(collision, Constants.GROUNG_TAG_ID) || IsCollided(collision, Constants.PLATFORM_TAG_ID))
             {
                 m_jumpCount = 0;
                 m_isGrounded = true;
@@ -78,10 +82,20 @@ namespace SideScroller
 
         private void OnCollisionExit(Collision collision)
         {
-            if (IsCollided(collision, Constants.GroundTagId) || IsCollided(collision, Constants.PlatformTagId))
+            if (IsCollided(collision, Constants.GROUNG_TAG_ID) || IsCollided(collision, Constants.PLATFORM_TAG_ID))
             {
                 m_isGrounded = false;
             }
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            OntriggerEnterEvent?.Invoke(other);
+        }
+
+        private void OnTriggerExit(Collider other)
+        {
+            OntriggerExitEvent?.Invoke(other);
         }
 
         private bool IsCollided(Collision collision, string name)

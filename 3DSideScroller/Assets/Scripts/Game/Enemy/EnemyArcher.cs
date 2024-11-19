@@ -22,7 +22,7 @@ namespace SideScroller
 
         private void Start()
         {
-            SetPlayer(GameObject.FindGameObjectWithTag(Constants.PlayerTagId));
+            SetPlayer(GameObject.FindGameObjectWithTag(Constants.PLAYER_TAG_ID));
         }
 
 

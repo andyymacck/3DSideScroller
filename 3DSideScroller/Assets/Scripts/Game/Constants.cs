@@ -2,9 +2,10 @@ namespace SideScroller
 {
     public static class Constants
     {
-        public const string GroundTagId = "Ground";
-        public const string PlatformTagId = "Platform";
-        public const string PlayerTagId = "Player";
-        public const string EnemyTagId = "Enemy";
+        public const string GROUNG_TAG_ID = "Ground";
+        public const string PLATFORM_TAG_ID = "Platform";
+        public const string PLAYER_TAG_ID = "Player";
+        public const string ENEMY_TAG_ID = "Enemy";
+        public const string COLLECTABLE_TAG_ID = "Collectable";
     }
 }

@@ -31,7 +31,7 @@ namespace SideScroller
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.CompareTag(Constants.PlayerTagId))
+            if (other.CompareTag(Constants.PLAYER_TAG_ID))
             {
                 Unit unit = other.GetComponent<Unit>();
 
