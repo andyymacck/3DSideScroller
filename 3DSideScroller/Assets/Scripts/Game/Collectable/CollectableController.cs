@@ -7,15 +7,11 @@ namespace SideScroller
     {
         [SerializeField] PlayerController m_playerController;
 
-        private readonly List<CollectableItem> m_collectedItems = new List<CollectableItem>();
-
-        private GemModel m_GemModel;
+        private readonly Dictionary<CollectabeType, CollectableModel> m_collectedItems = new Dictionary<CollectabeType, CollectableModel>();
 
         void Start()
         {
             m_playerController.OntriggerEnterEvent += TriggerEnter;
-
-            m_GemModel = new GemModel(CollectabeType.Gem, 0, "");
         }
 
 
@@ -45,15 +41,39 @@ namespace SideScroller
 
         private void AddCollectabe(CollectableItem collectableItem)
         {
-            if (collectableItem.Type == CollectabeType.Gem)
+            if (m_collectedItems.TryGetValue(collectableItem.Type, out CollectableModel collectable))
             {
-                int count = m_GemModel.Count;
-                m_GemModel = new GemModel(CollectabeType.Gem, count + 1, "");
+                collectable.IncrementCount();
+            }
+            else
+            {
+                CollectableModel newItem = CreateModel(collectableItem.Type);
 
-                EventHub.Instance.Publish(new CollectItemEvent(m_GemModel));
+                if(newItem != null)
+                {
+                    m_collectedItems.Add(collectableItem.Type, newItem);
+                }
             }
 
-            
+
+            EventHub.Instance.Publish(new CollectItemEvent(m_collectedItems));
+        }
+
+        private CollectableModel CreateModel(CollectabeType collectabeType)
+        {
+            switch(collectabeType)
+            {
+                case CollectabeType.Bomb:
+                    return new GemModel(CollectabeType.Bomb, 1, "RR");
+                case CollectabeType.Gem:
+                    return new GemModel(CollectabeType.Gem, 1, "RR");
+                case CollectabeType.Potion:
+                    return new GemModel(CollectabeType.Potion, 1, "RR");
+                case CollectabeType.Health:
+                    return new GemModel(CollectabeType.Health, 1, "RR");
+                default:
+                    return null;
+            }
         }
     }
 }

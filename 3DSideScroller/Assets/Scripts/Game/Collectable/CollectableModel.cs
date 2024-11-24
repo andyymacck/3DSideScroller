@@ -1,4 +1,3 @@
-// CollectableModel.cs
 using UnityEngine;
 
 public abstract class CollectableModel
@@ -13,6 +12,16 @@ public abstract class CollectableModel
     {
         this.type = type;
         this.count = count;
+    }
+
+    public void IncrementCount(int amout = 1)
+    {
+        this.count++; 
+    }
+
+    public void DecrementCount(int amout = 1)
+    {
+        this.count--;
     }
 
     public abstract void ApplyEffect(GameObject player);

@@ -10,13 +10,13 @@ public class CanvasManager : MonoBehaviour
 
     private void Awake()
     {
-        EventHub.Instance.Subcribe<HealthChangeEvent>(UpdateHealth);
+        EventHub.Instance.Subscribe<HealthChangeEvent>(UpdateHealth);
         m_root.SetActive(true);
     }
 
     private void OnDestroy()
     {
-        EventHub.Instance.UnSubcribe<HealthChangeEvent>(UpdateHealth);
+        EventHub.Instance.UnSubscribe<HealthChangeEvent>(UpdateHealth);
     }
 
     private void UpdateHealth(HealthChangeEvent eventData)

@@ -1,70 +1,71 @@
-// CollectableView.cs
 using System.Collections.Generic;
 using UnityEngine;
 
 public class CollectableView : MonoBehaviour
 {
-    public CollectableModel m_model;
+    [SerializeField] private CollectabeType m_viewType;
 
-    [SerializeField] private GameObject m_referenceObject;
-    [SerializeField] private Transform m_transform;
-    [SerializeField] private float m_offset;
+    [SerializeField] private GameObject m_referenceObject; // Prefab to instantiate
+    [SerializeField] private Transform m_transform; // Parent transform for spawned objects
+    [SerializeField] private float m_offsetItem; // Offset between spawned objects
+    [SerializeField] private float m_offsetGlobal; // Offset for all spawned objects
 
     private List<GameObject> m_spawnedObjects = new List<GameObject>();
 
     private void Start()
     {
-        EventHub.Instance.Subcribe<CollectItemEvent>(UpdateView);
+        // Subscribe to the EventHub to react to single GemModel updates
+        EventHub.Instance.Subscribe<CollectItemEvent>(OnCollectItemEvent);
     }
 
     private void OnDestroy()
     {
-        EventHub.Instance.UnSubcribe<CollectItemEvent>(UpdateView);
+        // Unsubscribe when the object is destroyed
+        EventHub.Instance.UnSubscribe<CollectItemEvent>(OnCollectItemEvent);
     }
 
-    private void UpdateView(CollectItemEvent eventData)
+    private void OnCollectItemEvent(CollectItemEvent eventData)
     {
-        DrawView(eventData.GemModel);
+        // Update the view using the single GemModel provided
+        UpdateView(eventData.Models);
     }
 
-    private void DrawView(GemModel gemModel)
+    private void UpdateView(Dictionary<CollectabeType, CollectableModel> Models)
     {
-        // FIX THIS ****
-        // MAKE SPAWN CORRECT
-        // TRY TO PASS A COLLETION OF THE MODELS INSTED ON ONLY 1 MODEL - REFERENCE IS A EVENT HUB SUBC and UNSUBCRRIBE
-
-        for (int i = 0; i < m_spawnedObjects.Count; i++)
+        if (Models.TryGetValue(m_viewType, out CollectableModel model))
         {
-            //Destroy(m_spawnedObjects[i]);
-            //m_spawnedObjects.RemoveAt(i);
+            SpawnObjectsInTheView(model);
         }
-
-        foreach(var obj in m_spawnedObjects)
+        else
         {
-            Destroy(obj);
-        }
-
-        for (int i = 0; i < gemModel.Count; i++)
-        {
-            m_spawnedObjects.Add(m_referenceObject);
-            GameObject go = Instantiate(m_referenceObject, m_transform);
-            go.transform.position = m_transform.position + m_offset * Vector3.right;
-            go.SetActive(true);
+            ClearView();
         }
     }
 
-
-
-    public void SetModel(CollectableModel model)
+    private void ClearView()
     {
-        m_model = model;
-        UpdateView();
+        foreach (GameObject collectableObject in m_spawnedObjects)
+        {
+            Destroy(collectableObject);
+        }
+
+        m_spawnedObjects.Clear();
     }
 
-    void UpdateView()
+    private void SpawnObjectsInTheView(CollectableModel collectableModel)
     {
-        // Example of changing the appearance based on type
-        //Debug.Log("Displaying: " + m_model.CollectableName);
-        // Use different effects or animations here depending on the item type
+        ClearView();
+
+        int count = collectableModel.Count;
+
+        for (int i = 0; i < count; i++)
+        {
+            GameObject newCollectable = Instantiate(m_referenceObject, m_transform);
+            Vector3 offset = new Vector3(m_offsetItem * i, 0f, 0f);
+            Vector3 global = new Vector3(m_offsetGlobal, 0f, 0f);
+            newCollectable.transform.localPosition = m_transform.position + global + offset;
+            newCollectable.SetActive(true);
+            m_spawnedObjects.Add(newCollectable);
+        }
     }
 }

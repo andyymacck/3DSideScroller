@@ -21,7 +21,7 @@ public class EventHub
     private readonly Dictionary<Type, List<Delegate>> m_subscribers = new Dictionary<Type, List<Delegate>>();
 
 
-    public void Subcribe<T>(Action<T> callbackAction) where T : BaseEvent
+    public void Subscribe<T>(Action<T> callbackAction) where T : BaseEvent
     {
         var eventType = typeof(T);
 
@@ -33,7 +33,7 @@ public class EventHub
         m_subscribers[eventType].Add(callbackAction);
     }
 
-    public void UnSubcribe<T>(Action<T> callbackAction) where T : BaseEvent
+    public void UnSubscribe<T>(Action<T> callbackAction) where T : BaseEvent
     {
         var eventType = typeof(T);
 

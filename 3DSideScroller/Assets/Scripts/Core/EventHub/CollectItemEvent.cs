@@ -2,10 +2,10 @@ using System.Collections.Generic;
 
 public class CollectItemEvent : BaseEvent
 {
-    public GemModel GemModel { get; }
+    public Dictionary<CollectabeType, CollectableModel> Models { get; }
 
-    public CollectItemEvent(GemModel gem)
+    public CollectItemEvent(Dictionary<CollectabeType, CollectableModel> models)
     {
-        GemModel = gem;
+        Models = models;
     }
 }
