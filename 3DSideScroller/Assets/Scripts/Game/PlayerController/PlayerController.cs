@@ -14,11 +14,14 @@ namespace SideScroller
         private int m_jumpCount = 0;
         private int m_jumpCountTotal = 0;
         private bool m_isGrounded = true;
+        private PlayerStates m_state;
 
         public Vector3 PlayerVelocity => m_rigidbody.velocity;
+        public PlayerStates State => m_state;
 
         public Action<Collider> OntriggerEnterEvent;
         public Action<Collider> OntriggerExitEvent;
+        public Action<PlayerStates> OnplayerStateChangedEvent;
 
 
         private void Awake()
@@ -30,6 +33,8 @@ namespace SideScroller
         private void Start()
         {
             EventHub.Instance.Publish(new HealthChangeEvent(m_healthCurrent, m_healthOnStart));
+
+            SetState(PlayerStates.Idle);
         }
 
         void FixedUpdate()
@@ -37,11 +42,16 @@ namespace SideScroller
             if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D))
             {
                 Move(false);
+                SetState(PlayerStates.RunForward);
             }
-
-            if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))
+            else if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))
             {
                 Move(true);
+                SetState(PlayerStates.RunBackwards);
+            }
+            else if (m_isGrounded)
+            {
+                SetState(PlayerStates.Idle);
             }
         }
 
@@ -60,8 +70,9 @@ namespace SideScroller
                 Vector3 moveDir = Vector3.up;
                 m_rigidbody.AddForce(moveDir * m_forceJump, ForceMode.Impulse);
 
-                m_jumpCount++; // m_jumpCount = m_jumpCount + 1
+                m_jumpCount++;
                 m_jumpCountTotal++;
+                SetState(PlayerStates.Jump);
             }
         }
 
@@ -124,6 +135,15 @@ namespace SideScroller
         public override void Die()
         {
             Destroy(gameObject);
+        }
+
+        private void SetState(PlayerStates state)
+        {
+            if (m_state != state)
+            {
+                m_state = state;
+                OnplayerStateChangedEvent?.Invoke(state);
+            }
         }
     }
 }
