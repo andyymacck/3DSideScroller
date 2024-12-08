@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 namespace SideScroller
@@ -10,8 +11,11 @@ namespace SideScroller
         private const string STATE_IDLE_TRIGGER = "Idle";
         private const string STATE_RUN_TRIGGER = "Run";
         private const string STATE_JUMP_TRIGGER = "Jump";
+        private const string BLEND_PARAM = "RunBlend";
 
-        private const string BLEND_PARAM = "Blend";
+        private const float BLEND_TIME = 0.2f;
+
+        private Coroutine m_blendCoroutine;
 
         void Start()
         {
@@ -40,13 +44,11 @@ namespace SideScroller
             if (state == PlayerStates.RunForward)
             {
                 SetBlendParam(1f);
-                SetIdle();
             }
 
             if (state == PlayerStates.RunBackwards)
             {
                 SetBlendParam(0f);
-                SetIdle();
             }
 
             if (state == PlayerStates.Jump)
@@ -57,17 +59,36 @@ namespace SideScroller
 
         private void SetBlendParam(float blend)
         {
-            m_animator.SetFloat(BLEND_PARAM, blend);
+            if (m_blendCoroutine != null)
+            {
+                StopCoroutine(m_blendCoroutine);
+            }
+
+            m_blendCoroutine = StartCoroutine(SmoothAnimationBlend(blend));
+        }
+        
+        private IEnumerator SmoothAnimationBlend(float targetValue)
+        {
+            float startValue = m_animator.GetFloat(BLEND_PARAM);
+            float time = 0f;
+            float lerpFactor = 0f;
+            float blendValue = 0f;
+
+            while (time < BLEND_TIME)
+            {
+                time += Time.deltaTime;
+                lerpFactor = time / BLEND_TIME;
+                blendValue = Mathf.Lerp(startValue, targetValue, lerpFactor);
+                m_animator.SetFloat(BLEND_PARAM, blendValue);
+                yield return null;
+            }
+
+            m_animator.SetFloat(BLEND_PARAM, targetValue);
         }
 
         private void SetIdle()
         {
             m_animator.SetTrigger(STATE_IDLE_TRIGGER);
-        }
-
-        private void SetRun()
-        {
-            m_animator.SetTrigger(STATE_RUN_TRIGGER);
         }
 
         private void SetJump()
