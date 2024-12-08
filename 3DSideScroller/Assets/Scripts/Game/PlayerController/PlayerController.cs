@@ -1,3 +1,4 @@
+using MgsTools;
 using System;
 using UnityEngine;
 
@@ -135,6 +136,11 @@ namespace SideScroller
         public override void Die()
         {
             Destroy(gameObject);
+        }
+
+        private void StartDieFX()
+        {
+
         }
 
         private void SetState(PlayerStates state)

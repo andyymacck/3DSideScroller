@@ -1,5 +1,5 @@
+using LevelManagerLoader;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace SideScroller
@@ -39,14 +39,12 @@ namespace SideScroller
 
         private void GameStart()
         {
-            SceneManager.LoadScene(1);
+            LevelManager.LoadLevelByNum(LevelGroupType.Classic, 1);
         }
 
         private void GameExit()
         {
             Application.Quit();
         }
-
-
     }
 }
