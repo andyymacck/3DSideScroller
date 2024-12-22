@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 
 namespace SideScroller
@@ -12,7 +12,6 @@ namespace SideScroller
         [SerializeField] private List<TeleportTrigger> m_teleportTriggers = new List<TeleportTrigger>();
 
         private bool m_isTeleporting = false;
-
 
         private void Start ()
         {
@@ -60,11 +59,19 @@ namespace SideScroller
         {
             m_isTeleporting = true;
 
-            player.transform.position = destination.position;
+            EventHub.Instance.Publish(new ScreenFadeEvent(true));
 
-            yield return null;
+            yield return new WaitForSeconds(3f);
+
+            player.SetPosition(destination.position);
+            CameraController.Instance.SetPosition(destination.position);
+            CameraController.Instance.ZoomIn();
+            EventHub.Instance.Publish(new ScreenFadeEvent(false));
+
+
 
             m_isTeleporting = false;
+
         }
     }
 }

@@ -16,9 +16,12 @@ namespace SideScroller
 
         private Vector3 m_lastPlayerPosition;
 
+        public static CameraController Instance;
+
         private void Awake()
         {
             m_transform.position = m_player.transform.position + m_cameraOffsetStart;
+            Instance = this;
         }
 
         void Start()
@@ -50,6 +53,19 @@ namespace SideScroller
             float y = Mathf.Lerp(m_transform.transform.position.y, targetPos.y, Time.deltaTime * m_speedVertical);
             float z = Mathf.Lerp(m_transform.transform.position.z, targetPos.z, Time.deltaTime);
             m_transform.position = new Vector3(x, y, z);
+        }
+
+        public void SetPosition(Vector3 targetPosition)
+        {
+            Vector3 position = targetPosition + m_cameraOffset;
+            m_transform.position = position;
+        }
+
+        public void ZoomIn()
+        {
+            Vector3 currentPos = m_transform.position;
+            currentPos.z = m_cameraOffsetDeath.z;
+            m_transform.position = currentPos;
         }
     }
 }

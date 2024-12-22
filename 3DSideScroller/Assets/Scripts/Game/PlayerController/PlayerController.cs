@@ -23,7 +23,7 @@ namespace SideScroller
         public Action<Collider> OntriggerEnterEvent;
         public Action<Collider> OntriggerExitEvent;
         public Action<PlayerStates> OnplayerStateChangedEvent;
-
+        
 
         private void Awake()
         {
@@ -63,6 +63,12 @@ namespace SideScroller
                 Jump();
             }
         }
+
+        public void SetPosition(Vector3 position)
+        {
+            transform.position = position;
+        }
+
 
         private void Jump()
         {
