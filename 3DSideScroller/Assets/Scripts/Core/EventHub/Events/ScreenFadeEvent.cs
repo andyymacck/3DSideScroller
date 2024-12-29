@@ -1,10 +1,12 @@
-
-public class ScreenFadeEvent : BaseEvent
+namespace SideScroller
 {
-    public bool IsFadeOut  { get; }
-
-    public ScreenFadeEvent(bool isFadeOut)
+    public class ScreenFadeEvent : BaseEvent
     {
-        IsFadeOut = isFadeOut;
+        public bool IsFadeOut { get; }
+
+        public ScreenFadeEvent(bool isFadeOut)
+        {
+            IsFadeOut = isFadeOut;
+        }
     }
 }

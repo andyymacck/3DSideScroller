@@ -52,9 +52,9 @@ namespace SideScroller
                 return;
             }
 
-            StartCoroutine(TeleportCoroutine(player, destination));
+           StartCoroutine(TeleportCoroutine(player, destination));
         }
-        
+
         private IEnumerator TeleportCoroutine(PlayerController player, Transform destination)
         {
             m_isTeleporting = true;

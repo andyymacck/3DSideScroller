@@ -2079,7 +2079,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aee41d008b2c7144ca24a77c5e112c4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_teleportTriggers: []
+  m_teleportTriggers:
+  - {fileID: 1106304884}
+--- !u!114 &1106304884 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5573137861083119383, guid: 3fb0b7012da9f524d986d38f556341cd, type: 3}
+  m_PrefabInstance: {fileID: 3941346503246914108}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 794a42b13d908e54490e9069aea6418d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &1106304888 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 646212862305849164, guid: 3fb0b7012da9f524d986d38f556341cd, type: 3}
@@ -2361,9 +2373,7 @@ MonoBehaviour:
   m_root: {fileID: 692783129}
   m_healthBar: {fileID: 1998551630}
   m_healthText: {fileID: 659797932}
-  m_fadeImage: {fileID: 1985338265}
-  m_colorFadeIn: {r: 0, g: 0, b: 0, a: 1}
-  m_colorFadeOut: {r: 0.9622642, g: 0.79782164, b: 0, a: 0}
+  m_imageFade: {fileID: 1985338268}
 --- !u!114 &1276408158
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3825,6 +3835,7 @@ GameObject:
   - component: {fileID: 1985338267}
   - component: {fileID: 1985338266}
   - component: {fileID: 1985338265}
+  - component: {fileID: 1985338268}
   m_Layer: 5
   m_Name: FadeImage
   m_TagString: Untagged
@@ -3889,6 +3900,21 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1985338268
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1985338264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 715c4e2c46ecfac4793ac86358bb0e4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_fadeImage: {fileID: 1985338265}
+  m_colorFadeIn: {r: 0, g: 0, b: 0, a: 1}
+  m_colorFadeOut: {r: 0, g: 0, b: 0, a: 0}
 --- !u!1 &1998551628
 GameObject:
   m_ObjectHideFlags: 0

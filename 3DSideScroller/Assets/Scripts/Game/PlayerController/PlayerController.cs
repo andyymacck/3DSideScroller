@@ -1,4 +1,3 @@
-using MgsTools;
 using System;
 using UnityEngine;
 
@@ -68,7 +67,6 @@ namespace SideScroller
         {
             transform.position = position;
         }
-
 
         private void Jump()
         {
