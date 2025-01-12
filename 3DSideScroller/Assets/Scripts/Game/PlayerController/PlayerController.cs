@@ -22,18 +22,22 @@ namespace SideScroller
         public Action<Collider> OntriggerEnterEvent;
         public Action<Collider> OntriggerExitEvent;
         public Action<PlayerStates> OnplayerStateChangedEvent;
-        
 
-        private void Awake()
+        private EnemyManager m_enemyManager;
+        private Unit m_currentEnemy;
+
+
+        public void Initialize(EnemyManager enemyManager)
         {
             m_rigidbody = GetComponent<Rigidbody>();
             m_healthCurrent = m_healthOnStart;
+            m_enemyManager = enemyManager;
         }
 
         private void Start()
         {
+            EventHub.Instance.Subscribe<TeleportEvent>(OnTeleport);
             EventHub.Instance.Publish(new HealthChangeEvent(m_healthCurrent, m_healthOnStart));
-
             SetState(PlayerStates.Idle);
         }
 
@@ -61,6 +65,11 @@ namespace SideScroller
             {
                 Jump();
             }
+        }
+
+        private void OnTeleport(TeleportEvent eventData)
+        {
+            SetPosition(eventData.Destination);
         }
 
         public void SetPosition(Vector3 position)
@@ -119,6 +128,36 @@ namespace SideScroller
             return collision.gameObject.CompareTag(name);
         }
 
+
+        private void EnemyLookup()
+        {
+            int enemyCount = m_enemyManager.EnemyList.Count;
+            float distToFight = 2f; // cosnt
+            float minDist = distToFight;
+            
+            m_currentEnemy = null;
+
+            for (int i = 0; i < enemyCount; i++)
+            {
+                Unit enemy = m_enemyManager.EnemyList[i];
+
+                float dist = Vector3.Distance(transform.position, enemy.transform.position);
+
+                if (dist <= minDist)
+                {
+                    m_currentEnemy = enemy;
+                    minDist = dist;
+                }
+            }
+        }
+        
+        // 1 dist = 1f;
+        // 2 dist = 1.5f;
+
+        // HT step 1 = Add auto enemy attack by dist
+        // HT step 2 = Add manual attack by pressing the button
+        // look for attack in to an enemy classes
+
         public override void DealDamage(float damage)
         {
             if (!m_isAlive)
@@ -139,6 +178,7 @@ namespace SideScroller
 
         public override void Die()
         {
+            EventHub.Instance.UnSubscribe<TeleportEvent>(OnTeleport);
             Destroy(gameObject);
         }
 

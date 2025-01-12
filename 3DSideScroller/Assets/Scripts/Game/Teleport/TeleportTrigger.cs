@@ -11,7 +11,7 @@ namespace SideScroller
 
         private void OnTriggerEnter(Collider other)
         {
-            if(m_isEnabled == false)
+            if (m_isEnabled == false)
             {
                 return;
             }
@@ -23,7 +23,7 @@ namespace SideScroller
                 if (playerController != null)
                 {
                     m_teleportManager.TeleportPlayerObject(playerController, m_targetDestination);
-                }    
+                }
             }
         }
 

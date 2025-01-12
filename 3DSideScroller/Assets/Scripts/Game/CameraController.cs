@@ -20,13 +20,9 @@ namespace SideScroller
 
         private void Awake()
         {
+            EventHub.Instance.Subscribe<TeleportEvent>(OnTeleport);
             m_transform.position = m_player.transform.position + m_cameraOffsetStart;
             Instance = this;
-        }
-
-        void Start()
-        {
-
         }
 
         void Update()
@@ -47,12 +43,23 @@ namespace SideScroller
             MoveCamera(new Vector3(targetX, targetPos.y, targetPos.z)); 
         }
 
+        private void OnDestroy()
+        {
+            EventHub.Instance.UnSubscribe<TeleportEvent>(OnTeleport); 
+        }
+
         private void MoveCamera(Vector3 targetPos)
         {
             float x = Mathf.Lerp(m_transform.transform.position.x, targetPos.x, Time.deltaTime * m_speedHorizontal);
             float y = Mathf.Lerp(m_transform.transform.position.y, targetPos.y, Time.deltaTime * m_speedVertical);
             float z = Mathf.Lerp(m_transform.transform.position.z, targetPos.z, Time.deltaTime);
             m_transform.position = new Vector3(x, y, z);
+        }
+
+        private void OnTeleport(TeleportEvent eventData)
+        {
+            SetPosition(eventData.Destination);
+            ZoomIn();
         }
 
         public void SetPosition(Vector3 targetPosition)

@@ -63,12 +63,8 @@ namespace SideScroller
 
             yield return new WaitForSeconds(3f);
 
-            player.SetPosition(destination.position);
-            CameraController.Instance.SetPosition(destination.position);
-            CameraController.Instance.ZoomIn();
             EventHub.Instance.Publish(new ScreenFadeEvent(false));
-
-
+            EventHub.Instance.Publish(new TeleportEvent(destination.position));
 
             m_isTeleporting = false;
 
