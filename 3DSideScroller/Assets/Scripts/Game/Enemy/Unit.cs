@@ -6,13 +6,23 @@ namespace SideScroller
     {
         [SerializeField] protected float m_healthCurrent = 100f;
         [SerializeField] protected float m_healthOnStart = 100f;
+        
+        [SerializeField] protected float m_attackDelay = 1f;
+        [SerializeField] protected float m_attackRange = 1f;
 
+        protected float m_lastAttackTime = 0f;
         protected bool m_isAlive = true;
+        protected EnemyManager m_enemyManager;
 
         public bool IsAlive => m_isAlive;
 
         public abstract void DealDamage(float damage);
 
         public abstract void Die();
+
+        public void SetEnemyManager(EnemyManager manager)
+        {
+            m_enemyManager = manager;
+        }
     }
 }

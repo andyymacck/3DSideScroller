@@ -1,4 +1,5 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace SideScroller
@@ -9,6 +10,8 @@ namespace SideScroller
         [SerializeField] private Rigidbody m_rigidbody;
         [SerializeField] private float m_forceMovement = 2f;
         [SerializeField] private float m_forceJump = 2f;
+        [SerializeField] private float m_attackDamage = 1f; // Define player's attack damage
+        [SerializeField] private float m_distToFight = 2f; // cosnt
 
         private int m_jumpLimit = 2; // max jumps before ground the player
         private int m_jumpCount = 0;
@@ -23,15 +26,13 @@ namespace SideScroller
         public Action<Collider> OntriggerExitEvent;
         public Action<PlayerStates> OnplayerStateChangedEvent;
 
-        private EnemyManager m_enemyManager;
         private Unit m_currentEnemy;
 
 
-        public void Initialize(EnemyManager enemyManager)
+        public void Initialize()
         {
             m_rigidbody = GetComponent<Rigidbody>();
             m_healthCurrent = m_healthOnStart;
-            m_enemyManager = enemyManager;
         }
 
         private void Start()
@@ -43,6 +44,8 @@ namespace SideScroller
 
         void FixedUpdate()
         {
+            EnemyLookup();
+
             if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D))
             {
                 Move(false);
@@ -64,6 +67,11 @@ namespace SideScroller
             if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W))
             {
                 Jump();
+            }
+
+            if (Input.GetKeyDown(KeyCode.Space)) // Change key as needed
+            {
+                OnClickAttack();
             }
         }
 
@@ -132,14 +140,15 @@ namespace SideScroller
         private void EnemyLookup()
         {
             int enemyCount = m_enemyManager.EnemyList.Count;
-            float distToFight = 2f; // cosnt
-            float minDist = distToFight;
+            float minDist = m_distToFight;
             
             m_currentEnemy = null;
 
             for (int i = 0; i < enemyCount; i++)
             {
                 Unit enemy = m_enemyManager.EnemyList[i];
+
+                if (enemy == null) continue;
 
                 float dist = Vector3.Distance(transform.position, enemy.transform.position);
 
@@ -174,6 +183,41 @@ namespace SideScroller
             {
                 Die();
             }
+        }
+
+        private void OnClickAttack()
+        {
+            if (CanAttack())
+            {
+                Debug.Log("ATTACK");
+                //start hit animation
+            }
+            else
+            {
+                return;
+            }
+
+
+            if (IsEnemyInRange(m_currentEnemy, m_attackRange))
+            {
+                m_lastAttackTime = Time.time;
+                m_currentEnemy.DealDamage(m_attackDamage);
+                Debug.Log($"Deal damage: {m_currentEnemy}");
+            }
+        }
+
+        private bool IsEnemyInRange(Unit enemy, float distanceToCheck)
+        {
+            if (enemy == null) return false;
+
+            float distance = Vector3.Distance(transform.position, enemy.transform.position);
+            
+           return distance <= distanceToCheck;
+        }
+
+        private bool CanAttack()
+        {
+            return Time.time >= m_lastAttackTime + m_attackDelay;
         }
 
         public override void Die()

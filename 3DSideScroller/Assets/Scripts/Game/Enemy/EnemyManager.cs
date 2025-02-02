@@ -10,15 +10,22 @@ namespace SideScroller
 
         public List<Unit> EnemyList => m_enemyList;
 
-        void Start()
+        private void Awake()
         {
-
+            for (int i = 0; i < m_enemyList.Count; i++)
+            {
+                m_enemyList[i].SetEnemyManager(this);
+            }
         }
 
-  
-        void Update()
+        public void AddEnemy(Unit unit)
         {
+            m_enemyList.Add(unit);
+        }
 
+        public void RemoveEnemy(Unit unit)
+        {
+            m_enemyList.Remove(unit);
         }
     }
 }

@@ -6,9 +6,7 @@ namespace SideScroller
     {
         [SerializeField] private float m_moveSpeed = 2f;
         [Header("Attack param")]
-        [SerializeField] private float m_attackRange = 1f;
         [SerializeField] private float m_idleRange = 5f;
-        [SerializeField] private float m_attackDelay = 1f;
         [SerializeField] private float m_damage = 1f;
         [SerializeField] private float m_speed = 2f;
         [SerializeField] private Rigidbody m_rigidbody;
@@ -17,7 +15,7 @@ namespace SideScroller
 
         private GameObject m_playerObject;
         private Unit m_playerController;
-        private float m_lastAttackTime = 0f;
+        
 
 
         private void Start()
@@ -65,13 +63,18 @@ namespace SideScroller
         {
             if (m_playerController != null)
             {
-                if (Time.time >= m_lastAttackTime + m_attackDelay)
+                if (CanAttack())
                 {
                     m_lastAttackTime = Time.time;
 
                     Shoot(m_playerController.gameObject);
                 }
             }
+        }
+
+        private bool CanAttack()
+        {
+            return Time.time >= m_lastAttackTime + m_attackDelay;
         }
 
         public override void DealDamage(float damage)
@@ -92,6 +95,7 @@ namespace SideScroller
 
         public override void Die()
         {
+            m_enemyManager.RemoveEnemy(this);
             Destroy(gameObject);
         }
 

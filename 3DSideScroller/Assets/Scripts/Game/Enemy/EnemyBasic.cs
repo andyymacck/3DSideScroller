@@ -5,9 +5,7 @@ namespace SideScroller
     public class EnemyBasic : Unit
     {
         [Header("Attack param")]
-        [SerializeField] private float m_attackRange = 1f;
         [SerializeField] private float m_idleRange = 5f;
-        [SerializeField] private float m_attackDelay = 1f;
         [SerializeField] private float m_damage = 1f;
         [SerializeField] private Rigidbody m_rigidbody;
         [SerializeField] private EnemyMovement m_enemyMovement;
@@ -16,7 +14,6 @@ namespace SideScroller
 
         private GameObject m_playerObject;
         private Unit m_playerController;
-        private float m_lastAttackTime = 0f;
 
         private enum EnemyState
         {
@@ -106,6 +103,7 @@ namespace SideScroller
 
         public override void Die()
         {
+            m_enemyManager.RemoveEnemy(this);
             Destroy(gameObject);
         }
     }

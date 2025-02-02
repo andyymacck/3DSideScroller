@@ -9,9 +9,7 @@ namespace SideScroller
     {
         [SerializeField] private float m_moveSpeed = 2f;
         [Header("Attack parameters")]
-        [SerializeField] private float m_attackRange = 8f; // Distance to start attacking
         [SerializeField] private float m_idleRange = 12f; // Distance to stop chasing
-        [SerializeField] private float m_attackDelay = 2f; // Delay between laser shots
         [SerializeField] private float m_damage = 5f; // Damage per laser
         [Space]
         [SerializeField] private LineRenderer m_lineRenderer;
@@ -19,8 +17,7 @@ namespace SideScroller
 
         private GameObject m_playerObject;
         private Unit m_playerController;
-        private float m_lastAttackTime = 0f;
-
+        private EnemyManager m_enemyManager;
 
         private void Start()
         {
@@ -89,6 +86,7 @@ namespace SideScroller
 
         public override void Die()
         {
+            m_enemyManager.RemoveEnemy(this);
             Destroy(gameObject);
         }
 
