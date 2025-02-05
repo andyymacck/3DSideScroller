@@ -2,28 +2,14 @@ using UnityEngine;
 
 namespace SideScroller
 {
-    public class EnemyArcher : Unit
+    public class EnemyArcher : EnemyBase
     {
         [SerializeField] private float m_moveSpeed = 2f;
-        [Header("Attack param")]
-        [SerializeField] private float m_idleRange = 5f;
-        [SerializeField] private float m_damage = 1f;
         [SerializeField] private float m_speed = 2f;
         [SerializeField] private Rigidbody m_rigidbody;
         [SerializeField] private Bullet m_bulletPrefab;
 
-
-        private GameObject m_playerObject;
-        private Unit m_playerController;
-        
-
-
-        private void Start()
-        {
-            SetPlayer(GameObject.FindGameObjectWithTag(Constants.PLAYER_TAG_ID));
-        }
-
-
+ 
         private void Update()
         {
             if (m_playerObject != null)
@@ -45,13 +31,7 @@ namespace SideScroller
                     Attack();
                 }
             }
-        }
-
-        public void SetPlayer(GameObject playerObject)
-        {
-            m_playerObject = playerObject;
-            m_playerController = playerObject.GetComponent<PlayerController>();
-        }
+        }   
 
         private void MoveToPlayer(GameObject player)
         {

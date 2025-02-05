@@ -1,28 +1,15 @@
 using System.Collections;
-using System.Runtime.InteropServices;
 using UnityEngine;
-using static UnityEngine.Timeline.AnimationPlayableAsset;
 
 namespace SideScroller
 {
-    public class EnemyLaser : Unit
+    public class EnemyLaser : EnemyBase
     {
         [SerializeField] private float m_moveSpeed = 2f;
-        [Header("Attack parameters")]
-        [SerializeField] private float m_idleRange = 12f; // Distance to stop chasing
-        [SerializeField] private float m_damage = 5f; // Damage per laser
         [Space]
         [SerializeField] private LineRenderer m_lineRenderer;
         [SerializeField] private LayerMask m_layerMask;
 
-        private GameObject m_playerObject;
-        private Unit m_playerController;
-        private EnemyManager m_enemyManager;
-
-        private void Start()
-        {
-            SetPlayer(GameObject.FindGameObjectWithTag(Constants.PLAYER_TAG_ID));
-        }
 
         private void Update()
         {
@@ -44,12 +31,6 @@ namespace SideScroller
                     MoveToPlayer(m_playerObject);
                 }
             }
-        }
-
-        public void SetPlayer(GameObject playerObject)
-        {
-            m_playerObject = playerObject;
-            m_playerController = playerObject.GetComponent<PlayerController>();
         }
 
         private void MoveToPlayer(GameObject player)

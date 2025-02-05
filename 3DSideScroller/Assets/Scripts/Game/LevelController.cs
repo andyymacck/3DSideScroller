@@ -10,14 +10,8 @@ namespace SideScroller
 
         private void Awake()
         {
-            m_playerController.Initialize();
-            m_playerController.SetEnemyManager(m_enemyManager);
-        }
-
-
-        void Update()
-        {
-
+            m_enemyManager.Initialize(m_playerController);
+            m_playerController.Initialize(m_enemyManager);
         }
     }
 }

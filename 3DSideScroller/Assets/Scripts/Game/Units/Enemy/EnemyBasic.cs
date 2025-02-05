@@ -2,18 +2,12 @@ using UnityEngine;
 
 namespace SideScroller
 {
-    public class EnemyBasic : Unit
+    public class EnemyBasic : EnemyBase
     {
-        [Header("Attack param")]
-        [SerializeField] private float m_idleRange = 5f;
-        [SerializeField] private float m_damage = 1f;
         [SerializeField] private Rigidbody m_rigidbody;
         [SerializeField] private EnemyMovement m_enemyMovement;
         [SerializeField] private EnemyState m_currentState = EnemyState.Idle;
 
-
-        private GameObject m_playerObject;
-        private Unit m_playerController;
 
         private enum EnemyState
         {
@@ -21,11 +15,6 @@ namespace SideScroller
             Patrol,
             EnemyAproach,
             Attack
-        }
-
-        private void Start()
-        {
-            SetPlayer(GameObject.FindGameObjectWithTag(Constants.PLAYER_TAG_ID));
         }
 
         private void Update()
@@ -63,13 +52,6 @@ namespace SideScroller
                     Attack();
                     break;
             }
-        }
-
-
-        public void SetPlayer(GameObject playerObject)
-        {
-            m_playerObject = playerObject;
-            m_playerController = playerObject.GetComponent<PlayerController>();
         }
 
         private void Attack()

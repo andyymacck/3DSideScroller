@@ -29,17 +29,19 @@ namespace SideScroller
         private Unit m_currentEnemy;
 
 
-        public void Initialize()
+        public void Initialize(EnemyManager manager)
         {
             m_rigidbody = GetComponent<Rigidbody>();
             m_healthCurrent = m_healthOnStart;
+
+            SetEnemyManager(manager);
+            SetState(PlayerStates.Idle);
         }
 
         private void Start()
         {
             EventHub.Instance.Subscribe<TeleportEvent>(OnTeleport);
             EventHub.Instance.Publish(new HealthChangeEvent(m_healthCurrent, m_healthOnStart));
-            SetState(PlayerStates.Idle);
         }
 
         void FixedUpdate()
@@ -159,13 +161,6 @@ namespace SideScroller
                 }
             }
         }
-        
-        // 1 dist = 1f;
-        // 2 dist = 1.5f;
-
-        // HT step 1 = Add auto enemy attack by dist
-        // HT step 2 = Add manual attack by pressing the button
-        // look for attack in to an enemy classes
 
         public override void DealDamage(float damage)
         {
