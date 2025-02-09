@@ -5,6 +5,7 @@ namespace SideScroller
         Idle,
         RunForward,
         RunBackwards,
-        Jump
+        Jump,
+        Win
     }
 }

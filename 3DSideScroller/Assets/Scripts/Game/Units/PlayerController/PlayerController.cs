@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices.WindowsRuntime;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -41,11 +42,18 @@ namespace SideScroller
         private void Start()
         {
             EventHub.Instance.Subscribe<TeleportEvent>(OnTeleport);
+            EventHub.Instance.Subscribe<LevelFinishedEvent>(OnLevelFinish);
+
             EventHub.Instance.Publish(new HealthChangeEvent(m_healthCurrent, m_healthOnStart));
         }
 
         void FixedUpdate()
         {
+            if (m_state == PlayerStates.Win)
+            {
+                return;
+            }
+
             EnemyLookup();
 
             if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D))
@@ -66,6 +74,11 @@ namespace SideScroller
 
         private void Update()
         {
+           if (m_state == PlayerStates.Win)
+            {
+                return;
+            }
+
             if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W))
             {
                 Jump();
@@ -80,6 +93,12 @@ namespace SideScroller
         private void OnTeleport(TeleportEvent eventData)
         {
             SetPosition(eventData.Destination);
+        }
+
+        private void OnLevelFinish(LevelFinishedEvent eventData)
+        {
+            SetState(PlayerStates.Win);
+            //start win animation
         }
 
         public void SetPosition(Vector3 position)
@@ -192,7 +211,6 @@ namespace SideScroller
                 return;
             }
 
-
             if (IsEnemyInRange(m_currentEnemy, m_attackRange))
             {
                 m_lastAttackTime = Time.time;
@@ -217,8 +235,18 @@ namespace SideScroller
 
         public override void Die()
         {
-            EventHub.Instance.UnSubscribe<TeleportEvent>(OnTeleport);
+            if (m_state == PlayerStates.Win)
+            {
+                return;
+            }    
+        
             Destroy(gameObject);
+        }
+
+        private void OnDestroy()
+        {
+            EventHub.Instance.UnSubscribe<TeleportEvent>(OnTeleport);
+            EventHub.Instance.UnSubscribe<LevelFinishedEvent>(OnLevelFinish);
         }
 
         private void StartDieFX()

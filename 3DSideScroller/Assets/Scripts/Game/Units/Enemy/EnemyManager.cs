@@ -19,6 +19,14 @@ namespace SideScroller
             }
         }
 
+        public void DisableEnemies()
+        {
+            foreach (var enemy in m_enemyList)
+            {
+                enemy.DisableEnemy();
+            }
+        }
+
         public void AddEnemy(EnemyBase enemy)
         {
             m_enemyList.Add(enemy);

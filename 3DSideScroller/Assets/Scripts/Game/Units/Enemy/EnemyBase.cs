@@ -16,5 +16,10 @@ namespace SideScroller
             m_playerObject = player.gameObject;
             m_playerController = player;
         }
+
+        public void DisableEnemy()
+        {
+            Die();
+        }
     }
 }
