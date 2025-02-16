@@ -14,14 +14,22 @@ namespace SideScroller
             m_playerController.Initialize(m_enemyManager);
 
             EventHub.Instance.Subscribe<LevelFinishedEvent>(OnLevelFinish);
+            EventHub.Instance.Subscribe<GameOverEvent>(OnGameOver);
         }
 
         private void OnDestroy()
         {
             EventHub.Instance.Subscribe<LevelFinishedEvent>(OnLevelFinish);
+            EventHub.Instance.UnSubscribe<GameOverEvent>(OnGameOver);
         }
 
+
         private void OnLevelFinish(LevelFinishedEvent eventData)
+        {
+            m_enemyManager.DisableEnemies();
+        }
+
+        private void OnGameOver(GameOverEvent eventData)
         {
             m_enemyManager.DisableEnemies();
         }

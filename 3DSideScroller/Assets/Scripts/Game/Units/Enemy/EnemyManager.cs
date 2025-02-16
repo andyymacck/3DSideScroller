@@ -21,9 +21,9 @@ namespace SideScroller
 
         public void DisableEnemies()
         {
-            foreach (var enemy in m_enemyList)
+            for (int i = m_enemyList.Count - 1; i >= 0; i--)
             {
-                enemy.DisableEnemy();
+                m_enemyList[i].DisableEnemy();
             }
         }
 

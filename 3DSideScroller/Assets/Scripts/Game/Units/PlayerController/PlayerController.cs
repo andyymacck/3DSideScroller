@@ -238,8 +238,10 @@ namespace SideScroller
             if (m_state == PlayerStates.Win)
             {
                 return;
-            }    
-        
+            }
+
+            int score = 0;
+            EventHub.Instance.Publish<GameOverEvent>(new GameOverEvent(score));
             Destroy(gameObject);
         }
 

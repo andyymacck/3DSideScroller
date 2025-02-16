@@ -15,11 +15,13 @@ namespace SideScroller
         [SerializeField] private float m_cameraLimitZOnDeath = 5f;
 
         private Vector3 m_lastPlayerPosition;
+        private Vector3 m_cameraTargetPosition;
 
         public static CameraController Instance;
 
         private void Awake()
         {
+            EventHub.Instance.Subscribe<GameOverEvent>(OnGameOver);
             EventHub.Instance.Subscribe<TeleportEvent>(OnTeleport);
             m_transform.position = m_player.transform.position + m_cameraOffsetStart;
             Instance = this;
@@ -27,25 +29,27 @@ namespace SideScroller
 
         void Update()
         {
-            if (m_player == null)
+            if (m_player != null) //need reworl to the camera states
             {
-                Vector3 tartgetPostDeath = m_lastPlayerPosition + m_cameraOffsetDeath;
-                MoveCamera(tartgetPostDeath); 
-
-                return;
+                HandlePlayerPosition();
             }
 
-            Vector3 distance = m_player.transform.position - m_transform.position;
-            Vector3 targetPos = m_player.transform.position + m_cameraOffset;
-            float targetX = targetPos.x + (m_player.PlayerVelocity.x * m_playerSpeedOffsetFactor);
-            m_lastPlayerPosition = m_player.transform.position;
-
-            MoveCamera(new Vector3(targetX, targetPos.y, targetPos.z)); 
+            MoveCamera(m_cameraTargetPosition); 
         }
 
         private void OnDestroy()
         {
-            EventHub.Instance.UnSubscribe<TeleportEvent>(OnTeleport); 
+            EventHub.Instance.UnSubscribe<TeleportEvent>(OnTeleport);
+            EventHub.Instance.UnSubscribe<GameOverEvent>(OnGameOver);
+        }
+
+        private void HandlePlayerPosition()
+        {
+            Vector3 distance = m_player.transform.position - m_transform.position;
+            Vector3 targetPos = m_player.transform.position + m_cameraOffset;
+            float targetX = targetPos.x + (m_player.PlayerVelocity.x * m_playerSpeedOffsetFactor);
+            m_lastPlayerPosition = m_player.transform.position;
+            m_cameraTargetPosition = new Vector3(targetX, targetPos.y, targetPos.z);
         }
 
         private void MoveCamera(Vector3 targetPos)
@@ -60,6 +64,11 @@ namespace SideScroller
         {
             SetPosition(eventData.Destination);
             ZoomIn();
+        }
+
+        private void OnGameOver(GameOverEvent eventData)
+        {
+            m_cameraTargetPosition = m_lastPlayerPosition + m_cameraOffsetDeath;
         }
 
         public void SetPosition(Vector3 targetPosition)

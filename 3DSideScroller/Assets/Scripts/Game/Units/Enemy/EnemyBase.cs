@@ -19,6 +19,7 @@ namespace SideScroller
 
         public void DisableEnemy()
         {
+            //Need to set enemy unactive, not die
             Die();
         }
     }

@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace SideScroller
 {
-    public class PauseMenuUi : MonoBehaviour
+    public class PauseMenuUi : MonoBehaviour //rename in to menu type == PauseMenu
     {
         [SerializeField] private GameObject m_root;
         [SerializeField] private Button m_buttonResume;
@@ -37,7 +37,6 @@ namespace SideScroller
                 Debug.LogError($"{nameof(m_buttonRestart)} is NULL");
             }
         }
-
 
         void Update()
         {
