@@ -4,13 +4,14 @@ using UnityEngine.UI;
 
 namespace SideScroller
 {
-    public class PauseMenu : BaseMenu
+    public class PauseMenuUi : MonoBehaviour //rename in to menu type == PauseMenu
     {
+        [SerializeField] private GameObject m_root;
         [SerializeField] private Button m_buttonResume;
         [SerializeField] private Button m_buttonRestart;
         [SerializeField] private Button m_buttonExitToMainMenu;
 
-        private bool m_isPaused = false;
+        private bool m_isPause = false;
 
         void Start()
         {
@@ -19,38 +20,44 @@ namespace SideScroller
             m_buttonExitToMainMenu.onClick.AddListener(GameExitToMenu);
         }
 
+        private void OnValidate()
+        {
+            if (m_buttonResume == null)
+            {
+                Debug.LogError($"{nameof(m_buttonResume)} is NULL");
+            }
+
+            if (m_buttonExitToMainMenu == null)
+            {
+                Debug.LogError($"{nameof(m_buttonExitToMainMenu)} is NULL");
+            }
+
+            if (m_buttonRestart == null)
+            {
+                Debug.LogError($"{nameof(m_buttonRestart)} is NULL");
+            }
+        }
+
         void Update()
         {
             if (Input.GetKeyDown(KeyCode.Escape))
             {
-                if (!m_isPaused)
+                if (!m_isPause)
                 {
-                    Show();
+                    PauseGame();
                 }
                 else
                 {
-                    Close();
+                    GameResume();
                 }
             }
         }
 
-        public override void Show()
-        {
-            base.Show(); // Calls BaseMenu.Show()
-            Time.timeScale = 0f; // Pause game
-            m_isPaused = true;
-        }
-
-        public override void Close()
-        {
-            base.Close(); // Calls BaseMenu.Close()
-            Time.timeScale = 1f; // Resume game
-            m_isPaused = false;
-        }
-
         private void GameResume()
         {
-            Close();
+            m_isPause = false;
+            Time.timeScale = 1f;
+            m_root.SetActive(false);
         }
 
         private void GameRestart()
@@ -63,6 +70,13 @@ namespace SideScroller
         {
             SceneManager.LoadScene(0);
             Time.timeScale = 1f;
+        }
+
+        private void PauseGame()
+        {
+            m_isPause = true;
+            Time.timeScale = 0f;
+            m_root.SetActive(true);
         }
     }
 }
