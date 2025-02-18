@@ -1,6 +1,4 @@
 using System;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace SideScroller
@@ -9,6 +7,8 @@ namespace SideScroller
     public class PlayerController : Unit
     {
         [SerializeField] private Rigidbody m_rigidbody;
+        [SerializeField] private Transform m_transform;
+        [SerializeField] private PlayerAnimationController m_animationController;
         [SerializeField] private float m_forceMovement = 2f;
         [SerializeField] private float m_forceJump = 2f;
         [SerializeField] private float m_attackDamage = 1f; // Define player's attack damage
@@ -60,11 +60,13 @@ namespace SideScroller
             {
                 Move(false);
                 SetState(PlayerStates.RunForward);
+                m_animationController.SetRotation(RotationStates.Right);
             }
             else if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))
             {
                 Move(true);
-                SetState(PlayerStates.RunBackwards);
+                SetState(PlayerStates.RunForward);
+                m_animationController.SetRotation(RotationStates.Left);
             }
             else if (m_isGrounded)
             {
@@ -88,6 +90,8 @@ namespace SideScroller
             {
                 OnClickAttack();
             }
+
+           //CalculateRotation();
         }
 
         private void OnTeleport(TeleportEvent eventData)
@@ -104,6 +108,20 @@ namespace SideScroller
         public void SetPosition(Vector3 position)
         {
             transform.position = position;
+        }
+
+        private void CalculateRotation()
+        {
+            if (m_currentEnemy != null)
+            {
+                Vector3 positionDiff = m_currentEnemy.transform.position - m_transform.position;
+                RotationStates targetRotation = positionDiff.x > 0f ? RotationStates.Right : RotationStates.Left;
+                m_animationController.SetRotation(targetRotation);
+            }
+            else
+            {
+                //m_animationController.SetRotation(RotationStates.Right);
+            }
         }
 
         private void Jump()

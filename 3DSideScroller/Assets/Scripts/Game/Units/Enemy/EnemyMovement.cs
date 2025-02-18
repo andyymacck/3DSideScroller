@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace SideScroller
 {
@@ -14,6 +15,7 @@ namespace SideScroller
         }
 
         [SerializeField] private Rigidbody m_rigidbody;
+        [SerializeField] private Transform m_rootTransform;
         [SerializeField] private float m_moveSpeed = 100f;
         [SerializeField] private Waypoint[] m_wayPoints = new Waypoint[] { };
 
@@ -23,23 +25,55 @@ namespace SideScroller
         private int m_platformIndex = 0;
         private bool m_isWaiting = false;
         private float m_waitTimer = 0f;
+        private RotationStates m_rotationState;
 
 
         public void MoveToObject(GameObject gameObject)
         {
             Vector3 dir = (gameObject.transform.position - transform.position).normalized;
             m_rigidbody.AddForce(new Vector3(dir.x, 0f, 0f) * m_moveSpeed);
+
+            SetRotation(gameObject.transform);
         }
 
         private void MoveToPosition(Vector3 position)
         {
             Vector3 dir = (position - transform.position).normalized;
             m_rigidbody.AddForce(new Vector3(dir.x, 0f, 0f) * m_moveSpeed);
+
+            SetRotation(position);
         }
 
-        //Delay to stay on waypoit (waypoint wait time)
-        //expant waypoint data thrue using custom waypoint class (create own waypoint class with parameter
-        //and use intead of Transform[] m_wayPoints
+        public void SetRotation(RotationStates rotationStates)
+        {
+            if (m_rotationState == rotationStates)
+            {
+                return;
+            }
+
+            m_rotationState = rotationStates;
+            Vector3 currentRotation = m_rootTransform.localRotation.eulerAngles;
+            currentRotation.y = rotationStates == RotationStates.Right ? 0 : 180;
+            m_rootTransform.localRotation = Quaternion.Euler(currentRotation);
+        }
+
+        public void SetRotation(Transform targetTransform)
+        {
+            if (targetTransform == null)
+            {
+                return;
+            }
+
+            SetRotation(targetTransform.position);
+        }
+
+        public void SetRotation(Vector3 position)
+        {
+            Vector3 dir = position - transform.position;
+
+            RotationStates rotationState = dir.x > 0f ? RotationStates.Right : RotationStates.Left;
+            SetRotation(rotationState);
+        }
 
         public void Patrol()
         {

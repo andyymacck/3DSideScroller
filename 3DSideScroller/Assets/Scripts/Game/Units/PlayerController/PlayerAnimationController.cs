@@ -7,6 +7,9 @@ namespace SideScroller
     {
         [SerializeField] Animator m_animator;
         [SerializeField] PlayerController m_playerController;
+        [SerializeField] Transform m_hips;
+
+        private RotationStates m_rotationState;
 
         private const string STATE_IDLE_TRIGGER = "Idle";
         private const string STATE_RUN_TRIGGER = "Run";
@@ -31,6 +34,19 @@ namespace SideScroller
         private void OnDestroy()
         {
             m_playerController.OnplayerStateChangedEvent -= AnimationStateChange;
+        }
+
+        public void SetRotation(RotationStates rotationStates)
+        {
+            if (m_rotationState == rotationStates)
+            {
+                return;
+            }
+
+            m_rotationState = rotationStates;
+            Vector3 currentRotation = m_hips.localRotation.eulerAngles;
+            currentRotation.y = rotationStates == RotationStates.Right ? 90 : -90;
+            m_hips.localRotation = Quaternion.Euler(currentRotation);
         }
 
         private void AnimationStateChange(PlayerStates state)

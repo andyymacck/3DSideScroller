@@ -64,6 +64,8 @@ namespace SideScroller
                     Unit player = m_playerController;
                     player.DealDamage(m_damage);
                 }
+
+                m_enemyMovement.SetRotation(m_playerController.transform);
             }
         }
 

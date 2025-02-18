@@ -54,6 +54,8 @@ MonoBehaviour:
   m_attackDelay: 1
   m_attackRange: 1
   m_rigidbody: {fileID: 6375278507248217860}
+  m_transform: {fileID: 7159730535521688664}
+  m_animationController: {fileID: 5651132059061172445}
   m_forceMovement: 80
   m_forceJump: 100
   m_attackDamage: 50
@@ -197,6 +199,46 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 945e2f586a1a63a49a99d9080a8e9f24, type: 2}
+    - target: {fileID: 3742407835892290726, guid: 81bb9eea30387e442899949a80011e55, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.0000036305157
+      objectReference: {fileID: 0}
+    - target: {fileID: 3742407835892290726, guid: 81bb9eea30387e442899949a80011e55, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.0008799042
+      objectReference: {fileID: 0}
+    - target: {fileID: 3742407835892290726, guid: 81bb9eea30387e442899949a80011e55, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.052070327
+      objectReference: {fileID: 0}
+    - target: {fileID: 3742407835892290726, guid: 81bb9eea30387e442899949a80011e55, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.70710224
+      objectReference: {fileID: 0}
+    - target: {fileID: 3742407835892290726, guid: 81bb9eea30387e442899949a80011e55, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.70710224
+      objectReference: {fileID: 0}
+    - target: {fileID: 3742407835892290726, guid: 81bb9eea30387e442899949a80011e55, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.0025300088
+      objectReference: {fileID: 0}
+    - target: {fileID: 3742407835892290726, guid: 81bb9eea30387e442899949a80011e55, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.0025300088
+      objectReference: {fileID: 0}
+    - target: {fileID: 3742407835892290726, guid: 81bb9eea30387e442899949a80011e55, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 3742407835892290726, guid: 81bb9eea30387e442899949a80011e55, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 89.59
+      objectReference: {fileID: 0}
+    - target: {fileID: 3742407835892290726, guid: 81bb9eea30387e442899949a80011e55, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 90
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -253,3 +295,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_animator: {fileID: 5449039122603214308}
   m_playerController: {fileID: 9125655489681550791}
+  m_hips: {fileID: 1720787830009702194}
