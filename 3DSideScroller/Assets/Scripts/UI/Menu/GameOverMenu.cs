@@ -9,20 +9,20 @@ namespace SideScroller
         [SerializeField] private Button m_buttonRestart;
         [SerializeField] private Button m_buttonExitToMainMenu;
 
-        private void Start()
+        public override void Show()
         {
             m_buttonRestart.onClick.AddListener(GameRestart);
             m_buttonExitToMainMenu.onClick.AddListener(GameExitToMenu);
-        }
 
-        public override void Show()
-        {
-            base.Show(); // Calls BaseMenu.Show()
+            base.Show();
         }
 
         public override void Close()
         {
-            base.Close(); // Calls BaseMenu.Close()
+            m_buttonRestart.onClick.RemoveAllListeners();
+            m_buttonExitToMainMenu.onClick.RemoveAllListeners();
+
+            base.Close();
         }
 
         private void GameRestart()
@@ -38,4 +38,3 @@ namespace SideScroller
         }
     }
 }
-

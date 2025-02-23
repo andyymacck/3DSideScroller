@@ -1,4 +1,5 @@
 using TMPro;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,7 +11,11 @@ namespace SideScroller
         [SerializeField] private Image m_healthBar;
         [SerializeField] private TMP_Text m_healthText;
         [SerializeField] private ImageFade m_imageFade;
-        [SerializeField] private GameObject m_gameOverMenu; // GameOverMenu or base Menu class
+        [SerializeField] private GameOverMenu m_gameOverMenu;
+        [SerializeField] private PauseMenu m_pauseMenu;
+        [SerializeField] private FinishMenu m_finishMenu;
+
+        private bool m_isPause = false;
 
 
         private void Awake()
@@ -21,7 +26,9 @@ namespace SideScroller
             EventHub.Instance.Subscribe<LevelFinishedEvent>(OnLevelFinished);
 
             m_root.SetActive(true);
-            m_gameOverMenu.SetActive(false);
+            m_gameOverMenu.Close();
+            m_pauseMenu.Close();
+            m_finishMenu.Close();
         }
 
         private void OnDestroy()
@@ -33,16 +40,32 @@ namespace SideScroller
             EventHub.Instance.UnSubscribe<LevelFinishedEvent>(OnLevelFinished);
         }
 
+        void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                if (!m_isPause)
+                {
+                    m_isPause = true;
+                    m_pauseMenu.Show();
+                }
+                else
+                {
+                    m_isPause = false;
+                    m_pauseMenu.Close();
+                }
+            }
+        }
+
         private void OnGameOver(GameOverEvent eventData)
         {
             m_imageFade.StartImageFade(true);
-            m_gameOverMenu.SetActive(true);
-            //m_gameOverMenu.Show();
+            m_gameOverMenu.Show();
         }
 
         private void OnLevelFinished(LevelFinishedEvent eventData)
         {
-
+           m_finishMenu.Show();
         }
 
         private void UpdateHealth(HealthChangeEvent eventData)

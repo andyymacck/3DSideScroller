@@ -13,6 +13,14 @@ namespace SideScroller
         {
             m_buttonStart.onClick.AddListener(GameStart);
             m_buttonExit.onClick.AddListener(GameExit);
+
+            LevelManager.Init();
+
+            if (LevelManagerData.LastLevelNum == 0 )
+            {
+                LevelManagerData.LastLevelNum = 1;
+            }
+
         }
 
         private void OnValidate()
@@ -39,7 +47,8 @@ namespace SideScroller
 
         private void GameStart()
         {
-            LevelManager.LoadLevelByNum(LevelGroupType.Classic, 1);
+            //LevelManager.LoadLevelByNum(LevelGroupType.Classic, 1);
+            LevelManager.LoadLevelLast();
         }
 
         private void GameExit()
