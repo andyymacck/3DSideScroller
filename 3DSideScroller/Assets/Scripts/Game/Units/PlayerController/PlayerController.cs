@@ -1,4 +1,5 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace SideScroller
@@ -13,6 +14,12 @@ namespace SideScroller
         [SerializeField] private float m_forceJump = 2f;
         [SerializeField] private float m_attackDamage = 1f; // Define player's attack damage
         [SerializeField] private float m_distToFight = 2f; // cosnt
+        [Space]
+        [SerializeField] private CatmullRomGenPoints m_path;
+        [SerializeField] private float m_pathPosition;
+        [SerializeField] private float m_foundDist;
+        [SerializeField] private float m_pathLength;
+
 
         private int m_jumpLimit = 2; // max jumps before ground the player
         private int m_jumpCount = 0;
@@ -45,6 +52,12 @@ namespace SideScroller
             EventHub.Instance.Subscribe<LevelFinishedEvent>(OnLevelFinish);
 
             EventHub.Instance.Publish(new HealthChangeEvent(m_healthCurrent, m_healthOnStart));
+
+            m_path.GenWay();
+            m_pathLength = m_path.GetPathLength();
+
+            m_path.GetNearestPosOfDist(transform.position, out m_foundDist, out bool isFound, 1f);
+            m_pathPosition = Math.Clamp(m_foundDist, 0f, m_pathLength);
         }
 
         void FixedUpdate()
@@ -54,19 +67,30 @@ namespace SideScroller
                 return;
             }
 
-            EnemyLookup();
+            float lookupRange = 2f;
+
+
+            m_path.GetClosestPosOfDist(transform.position, m_pathPosition, lookupRange, out m_foundDist, out bool isFound, 0.1f);
+            m_pathPosition = Math.Clamp(m_foundDist, 0f, m_pathLength);
+
+            Vector3 targetPosition = m_path.GetPosByDist(m_pathPosition);
+            Vector3 targetDirection = m_path.GetDirByDist(m_pathPosition);
+
+            transform.position = new Vector3(targetPosition.x, transform.position.y, targetPosition.z);
+
+            //EnemyLookup();
 
             if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D))
             {
-                Move(false);
+                Move(targetDirection);
                 SetState(PlayerStates.RunForward);
-                m_animationController.SetRotation(RotationStates.Right);
+                m_animationController.SetRotation(targetDirection);
             }
             else if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))
             {
-                Move(true);
+                Move(-targetDirection);
                 SetState(PlayerStates.RunForward);
-                m_animationController.SetRotation(RotationStates.Left);
+                m_animationController.SetRotation(-targetDirection);
             }
             else if (m_isGrounded)
             {
@@ -137,10 +161,9 @@ namespace SideScroller
             }
         }
 
-        private void Move(bool isLeft)
+        private void Move(Vector3 direction)
         {
-            Vector3 moveDir = isLeft ? Vector3.left : Vector3.right;
-            m_rigidbody.AddForce(moveDir * m_forceMovement);
+            m_rigidbody.AddForce(direction * m_forceMovement);
         }
 
         private void OnCollisionEnter(Collision collision)

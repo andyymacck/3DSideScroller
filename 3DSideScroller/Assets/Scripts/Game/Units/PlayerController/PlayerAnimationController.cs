@@ -49,6 +49,11 @@ namespace SideScroller
             m_hips.localRotation = Quaternion.Euler(currentRotation);
         }
 
+        public void SetRotation(Vector3 direction)
+        {
+            transform.rotation = Quaternion.LookRotation(direction);
+        }
+
         private void AnimationStateChange(PlayerStates state)
         {
             if (state == PlayerStates.Idle)

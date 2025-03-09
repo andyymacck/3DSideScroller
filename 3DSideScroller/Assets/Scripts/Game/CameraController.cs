@@ -48,6 +48,7 @@ namespace SideScroller
             Vector3 distance = m_player.transform.position - m_transform.position;
             Vector3 targetPos = m_player.transform.position + m_cameraOffset;
             float targetX = targetPos.x + (m_player.PlayerVelocity.x * m_playerSpeedOffsetFactor);
+            //add Z player position handling
             m_lastPlayerPosition = m_player.transform.position;
             m_cameraTargetPosition = new Vector3(targetX, targetPos.y, targetPos.z);
         }
