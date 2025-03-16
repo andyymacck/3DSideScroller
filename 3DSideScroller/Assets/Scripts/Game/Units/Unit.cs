@@ -1,8 +1,9 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace SideScroller
 {
-    public abstract class Unit : MonoBehaviour, IUnitt
+    public abstract class Unit : MonoBehaviour
     {
         [SerializeField] protected float m_healthCurrent = 100f;
         [SerializeField] protected float m_healthOnStart = 100f;
@@ -19,21 +20,5 @@ namespace SideScroller
 
         public abstract void Die();
 
-        public void Action1()
-        {
-            Unit unit = GetComponent<Unit>();
-            unit
-        }
-
-    }
-
-    public interface IUnitt
-    {
-        public void Action1();
-
-        public void TODO()
-        {
-            Action1();
-        }
     }
 }
