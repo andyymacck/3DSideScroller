@@ -11,8 +11,9 @@ namespace SideScroller
         [SerializeField] private Vector3 m_cameraOffsetStart;
         [SerializeField] private float m_speedVertical = 1f;
         [SerializeField] private float m_speedHorizontal = 1f;
+        [SerializeField] private float m_speedZ = 1f;
         [SerializeField] private float m_playerSpeedOffsetFactor = 1f;
-        [SerializeField] private float m_cameraLimitZOnDeath = 5f;
+        [SerializeField] private float m_playerSpeedOffsetFactorZ = 1f;
 
         private Vector3 m_lastPlayerPosition;
         private Vector3 m_cameraTargetPosition;
@@ -23,18 +24,21 @@ namespace SideScroller
         {
             EventHub.Instance.Subscribe<GameOverEvent>(OnGameOver);
             EventHub.Instance.Subscribe<TeleportEvent>(OnTeleport);
-            m_transform.position = m_player.transform.position + m_cameraOffsetStart;
+            // Start with a fixed z position using m_cameraOffsetStart
+            Vector3 startPos = m_player.transform.position + m_cameraOffsetStart;
+            startPos.z = m_cameraOffsetStart.z;
+            m_transform.position = startPos;
             Instance = this;
         }
 
         void Update()
         {
-            if (m_player != null) //need reworl to the camera states
+            if (m_player != null) // May be expanded later for different camera states.
             {
                 HandlePlayerPosition();
             }
 
-            MoveCamera(m_cameraTargetPosition); 
+            MoveCamera(m_cameraTargetPosition);
         }
 
         private void OnDestroy()
@@ -45,19 +49,18 @@ namespace SideScroller
 
         private void HandlePlayerPosition()
         {
-            Vector3 distance = m_player.transform.position - m_transform.position;
             Vector3 targetPos = m_player.transform.position + m_cameraOffset;
             float targetX = targetPos.x + (m_player.PlayerVelocity.x * m_playerSpeedOffsetFactor);
-            //add Z player position handling
+            float targetZ = targetPos.z + (m_player.PlayerVelocity.z * m_playerSpeedOffsetFactorZ);
             m_lastPlayerPosition = m_player.transform.position;
-            m_cameraTargetPosition = new Vector3(targetX, targetPos.y, targetPos.z);
+            m_cameraTargetPosition = new Vector3(targetX, targetPos.y, targetZ);
         }
 
         private void MoveCamera(Vector3 targetPos)
         {
-            float x = Mathf.Lerp(m_transform.transform.position.x, targetPos.x, Time.deltaTime * m_speedHorizontal);
-            float y = Mathf.Lerp(m_transform.transform.position.y, targetPos.y, Time.deltaTime * m_speedVertical);
-            float z = Mathf.Lerp(m_transform.transform.position.z, targetPos.z, Time.deltaTime);
+            float x = Mathf.Lerp(m_transform.position.x, targetPos.x, Time.deltaTime * m_speedHorizontal);
+            float y = Mathf.Lerp(m_transform.position.y, targetPos.y, Time.deltaTime * m_speedVertical);
+            float z = Mathf.Lerp(m_transform.position.z, targetPos.z, Time.deltaTime * m_speedZ);
             m_transform.position = new Vector3(x, y, z);
         }
 
@@ -69,18 +72,25 @@ namespace SideScroller
 
         private void OnGameOver(GameOverEvent eventData)
         {
-            m_cameraTargetPosition = m_lastPlayerPosition + m_cameraOffsetDeath;
+            // Set the camera target using the death offset, but force the z value
+            m_cameraTargetPosition = new Vector3(
+                m_lastPlayerPosition.x + m_cameraOffsetDeath.x,
+                m_lastPlayerPosition.y + m_cameraOffsetDeath.y,
+                m_cameraOffsetDeath.z);
         }
 
         public void SetPosition(Vector3 targetPosition)
         {
             Vector3 position = targetPosition + m_cameraOffset;
+            // Force the z position to the one defined in m_cameraOffset
+            position.z = m_cameraOffset.z;
             m_transform.position = position;
         }
 
         public void ZoomIn()
         {
             Vector3 currentPos = m_transform.position;
+            // Adjust the z value to use the death offset z
             currentPos.z = m_cameraOffsetDeath.z;
             m_transform.position = currentPos;
         }
