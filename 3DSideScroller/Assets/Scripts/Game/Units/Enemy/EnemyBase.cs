@@ -8,6 +8,7 @@ namespace SideScroller
         [SerializeField] protected float m_idleRange = 12f; // Distance to stop chasing
         [SerializeField] protected float m_damage = 5f; // Damage per laser
 
+        protected EnemyManager m_enemyManager;
         protected GameObject m_playerObject;
         protected Unit m_playerController;
 
@@ -21,6 +22,11 @@ namespace SideScroller
         {
             //Need to set enemy unactive, not die
             Die();
+        }
+
+        public void SetEnemyManager(EnemyManager manager)
+        {
+            m_enemyManager = manager;
         }
     }
 }

@@ -19,6 +19,7 @@ namespace SideScroller
         [SerializeField] private float m_pathPosition;
         [SerializeField] private float m_foundDist;
         [SerializeField] private float m_pathLength;
+        protected EnemyManager m_enemyManager;
 
 
         private int m_jumpLimit = 2; // max jumps before ground the player
@@ -116,6 +117,11 @@ namespace SideScroller
             }
 
            //CalculateRotation();
+        }
+
+        public void SetEnemyManager(EnemyManager manager)
+        {
+            m_enemyManager = manager;
         }
 
         private void OnTeleport(TeleportEvent eventData)

@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace SideScroller
 {
-    public abstract class Unit : MonoBehaviour
+    public abstract class Unit : MonoBehaviour, IUnitt
     {
         [SerializeField] protected float m_healthCurrent = 100f;
         [SerializeField] protected float m_healthOnStart = 100f;
@@ -12,17 +12,28 @@ namespace SideScroller
 
         protected float m_lastAttackTime = 0f;
         protected bool m_isAlive = true;
-        protected EnemyManager m_enemyManager;
-
+        
         public bool IsAlive => m_isAlive;
 
         public abstract void DealDamage(float damage);
 
         public abstract void Die();
 
-        public void SetEnemyManager(EnemyManager manager)
+        public void Action1()
         {
-            m_enemyManager = manager;
+            Unit unit = GetComponent<Unit>();
+            unit
+        }
+
+    }
+
+    public interface IUnitt
+    {
+        public void Action1();
+
+        public void TODO()
+        {
+            Action1();
         }
     }
 }
