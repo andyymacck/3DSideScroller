@@ -41,14 +41,12 @@ namespace SideScroller
         void Update()
         {
 
-
-
         }
 
         private void GameStart()
         {
-            //LevelManager.LoadLevelByNum(LevelGroupType.Classic, 1);
-            LevelManager.LoadLevelLast();
+            LevelManager.LoadLevelByNum(LevelGroupType.Classic, 1);
+            //LevelManager.LoadLevelLast();
         }
 
         private void GameExit()

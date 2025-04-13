@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace SideScroller
 {
-    public class LevelController : MonoBehaviour
+    public class LevelController : MonoBehaviour, ICleanable
     {
         [SerializeField] private PlayerController m_playerController;
         [SerializeField] private EnemyManager m_enemyManager;
@@ -32,6 +32,11 @@ namespace SideScroller
         private void OnGameOver(GameOverEvent eventData)
         {
             m_enemyManager.DisableEnemies();
+        }
+
+        public void Clean()
+        {
+            Debug.Log("AnyView.NotTodo");
         }
     }
 }

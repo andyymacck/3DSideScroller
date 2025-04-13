@@ -32,7 +32,7 @@ MonoBehaviour:
   - GroupType: 2
     Levels:
     - LevelType: 1
-      Scene: {fileID: 102900000, guid: 9fc0d4010bbf28b4594072e72b8655ab, type: 3}
+      Scene: {fileID: 102900000, guid: 90ad8da47df468c448ad67f86475e2d0, type: 3}
       SceneName: Level_1
       Unlocked: 1
       Argument: 0
@@ -41,7 +41,7 @@ MonoBehaviour:
       UnlockNextLevelInGroup: 1
       UnlockNextLevel: []
       LevelGroupType: 2
-      FileName: Level_01
+      FileName: Level_02
       LevelNum: 1
     - LevelType: 0
       Scene: {fileID: 102900000, guid: 90ad8da47df468c448ad67f86475e2d0, type: 3}
