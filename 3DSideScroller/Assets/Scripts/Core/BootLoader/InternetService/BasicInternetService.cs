@@ -1,16 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class BasicInternetService : IInternetService
 {
+    private ServiceState m_serviceState;
+    public ServiceState ServiceState => m_serviceState;
     public bool IsConnected => throw new System.NotImplementedException();
     
     public bool IsRunning => throw new System.NotImplementedException();
 
-    public void Initialize()
+    public Task Initialize()
     {
-        throw new System.NotImplementedException();
+        
     }
 
     public void Shutdown()

@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class PlayfabAccountService : IAccountService, ISavesService
 {
+    private ServiceState m_serviceState;
+    public ServiceState ServiceState => m_serviceState;
     public bool IsRunning => throw new System.NotImplementedException();
 
     private IInternetService m_internetService;
@@ -25,13 +28,9 @@ public class PlayfabAccountService : IAccountService, ISavesService
         throw new System.NotImplementedException();
     }
 
-    public void Initialize()
+    public Task Initialize()
     {
-        if (!m_internetService.IsConnected)
-        {
-            Debug.Log("Show connection error");
-            return;
-        }
+        throw new System.NotImplementedException();
     }
 
     public void SetInternetService(IInternetService internetService)

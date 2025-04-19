@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class PlayerPrefsSavesService : ISavesService
 {
+    private ServiceState m_serviceState;
+    public ServiceState ServiceState => m_serviceState;
     public bool IsAllSaved => throw new System.NotImplementedException();
 
     public bool IsRunning => throw new System.NotImplementedException();
@@ -13,7 +16,7 @@ public class PlayerPrefsSavesService : ISavesService
         throw new System.NotImplementedException();
     }
 
-    public void Initialize()
+    public Task Initialize()
     {
         throw new System.NotImplementedException();
     }

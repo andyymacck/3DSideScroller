@@ -1,6 +1,7 @@
 using LevelManagerLoader;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class Loader : MonoBehaviour
@@ -9,45 +10,36 @@ public class Loader : MonoBehaviour
 
     private List<IService> services = new List<IService>();
 
-    private enum ServicePlatform
-    { 
-        None, 
-        Steam, 
-        Epic,
-        GOG
-    };
-
-    void Start()
+    private async void Start()
     {
         ServicePlatform platform = GetCurrentPlaform();
 
         IInternetService internetService = GetInternetService(platform);
-        internetService.Initialize();
-        services.Add(internetService);
-        
+        await StartService(internetService);
+
+        Debug.Log($"IsConnected {internetService.IsConnected}");
         if(internetService.IsConnected)
         {
             
         }
 
         ISavesService savesService = new PlayerPrefsSavesService();
-        savesService.Initialize();
-
+        await StartService(savesService);
+     
         PlayfabAccountService playfabAccount = new PlayfabAccountService(internetService, savesService);
         IAccountService accountService = playfabAccount;
         ISavesService accountSaveService = playfabAccount;
-        accountService.SetInternetService(internetService);
-        services.Add(accountService);
-
-        playfabAccount.SaveValue("name", null);
-        savesService.SaveValue("name", null);
-        accountSaveService.SaveValue("name", null);
-
+        await StartService(playfabAccount);
 
         LevelManager.Init();
         LevelManager.LoadLevelByNum(LevelGroupType.Menu, 1);
-        
         LevelManagerData.UnlockNextLevels(LevelGroupType.Classic, 2);
+    }
+
+    private async Task StartService(IService service)
+    {
+        await service.Initialize();
+        services.Add(service);
     }
 
     private ServicePlatform GetCurrentPlaform()
@@ -65,7 +57,7 @@ public class Loader : MonoBehaviour
 #endif
         return ServicePlatform.None;
     }
-
+    //fix function to get created new internet service instead of basic internet service
     private IInternetService GetInternetService(ServicePlatform servicePlatform)
     {
         if (servicePlatform == ServicePlatform.Steam)

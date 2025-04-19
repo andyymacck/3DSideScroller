@@ -1,19 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class FileSavesService : ISavesService
 {
+
+    private ServiceState m_serviceState;
+    public ServiceState ServiceState => m_serviceState;
     public bool IsAllSaved => throw new System.NotImplementedException();
 
     public bool IsRunning => throw new System.NotImplementedException();
+    
 
     public object GetValue(string name)
     {
         throw new System.NotImplementedException();
     }
 
-    public void Initialize()
+    public Task Initialize()
     {
         throw new System.NotImplementedException();
     }
