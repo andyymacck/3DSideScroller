@@ -11,7 +11,7 @@ public class BasicInternetService : IInternetService
     
     public bool IsRunning => throw new System.NotImplementedException();
 
-    public Task Initialize()
+    public async Task Initialize()
     {
         
     }

@@ -28,9 +28,9 @@ public class PlayfabAccountService : IAccountService, ISavesService
         throw new System.NotImplementedException();
     }
 
-    public Task Initialize()
+    public async Task Initialize()
     {
-        throw new System.NotImplementedException();
+        await Task.Delay(2000);
     }
 
     public void SetInternetService(IInternetService internetService)

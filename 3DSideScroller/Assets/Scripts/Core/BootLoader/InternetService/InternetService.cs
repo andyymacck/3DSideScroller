@@ -4,8 +4,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Core.Services
-{
+
     public class InternetService : IInternetService
     {
         private bool m_isConnected;
@@ -22,17 +21,13 @@ namespace Core.Services
             "https://www.microsoft.com",
             "https://www.apple.com",
         };
-        
-        public event Action<ServiceState> OnConnectionStateChange;
-
-        public ServiceState ServiceState { get; private set; }
        
+        public event Action<ServiceState> OnConnectionStateChange;
+        public ServiceState ServiceState { get; private set; }
         public object InitResult { get; private set; }
-
-        bool IInternetService.IsConnected => throw new NotImplementedException();
-
-        public bool IsRunning => throw new NotImplementedException();
-
+        bool IInternetService.IsConnected => m_isConnected;
+        public bool IsRunning => ServiceState == ServiceState.Running;
+        
         public InternetService()
         {
             m_isConnected = false;
@@ -41,22 +36,18 @@ namespace Core.Services
 
         public async Task InitializeAsync()
         {
-            
             m_client = new HttpClient
             {
                 Timeout = TimeSpan.FromSeconds(m_timeOut)
             };
-            
             foreach (string site in m_sitesList)
             {
                 m_sites.Add(site, false);
             }
-            
+
             bool isConnected = await CheckAllSitesAsync();
             SwitchState(isConnected);
-            
             _ = StartCheckingConnectionAsync();
-
             ServiceState = ServiceState.Started;
         }
 
@@ -76,7 +67,6 @@ namespace Core.Services
             {
                 await CheckSingleSiteAsync(m_currentIndex);
                 IncrementSiteIndex();
-
                 await Task.Delay(m_timeOut * 1000);
             }
         }
@@ -92,7 +82,6 @@ namespace Core.Services
             {
                 return false;
             }
-
             try
             {
                 List<Task> tasks = new List<Task>();
@@ -103,16 +92,13 @@ namespace Core.Services
                 }
 
                 await Task.WhenAll(tasks);
-
                 bool isConnected = m_sites.ContainsValue(true);
                 ServiceState = isConnected ? ServiceState.Running : ServiceState.Down;
-
-
                 return isConnected;
             }
             catch (Exception e)
             {
-                Debug.LogError($"CheckAllSitesAsync encountered an error: {e.Message}");
+                Debug.Log($"CheckAllSitesAsync encountered an error: {e.Message}");
                 return false;
             }
         }
@@ -124,14 +110,11 @@ namespace Core.Services
                 SwitchState(false);
                 return;
             }
-
             try
             {
                 string webAddress = m_sitesList[index];
                 bool isConnected = await CheckConnectionAsync(m_client, webAddress);
-                
                 m_sites[webAddress] = isConnected;
-
                 if (isConnected)
                 {
                     SwitchState(true);
@@ -141,7 +124,6 @@ namespace Core.Services
                 else
                 {
                     m_timeOut = c_timeOutFast;
-                    
                     if (!m_sites.ContainsValue(true))
                     {
                         SwitchState(false);
@@ -180,18 +162,19 @@ namespace Core.Services
             {
                 OnConnectionStateChange?.Invoke(hasConnection ? ServiceState.Running : ServiceState.Down);
                 m_isConnected = hasConnection;
-                Debug.Log($"Internet Connected = {hasConnection}");
+                Debug.Log($"Internet Connected = {hasConnection}"); // Use UnityEngine.Debug
             }
         }
 
         public Task Initialize()
         {
-            throw new NotImplementedException();
+            return Task.CompletedTask;  // Return Task.CompletedTask
         }
 
         public void Shutdown()
         {
-            throw new NotImplementedException();
+            // Release resources
+            m_client?.Dispose(); // Dispose of the HttpClient
+            Debug.Log("InternetService Shutdown"); // Use UnityEngine.Debug
         }
     }
-}

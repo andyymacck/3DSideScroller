@@ -16,9 +16,9 @@ public class PlayerPrefsSavesService : ISavesService
         throw new System.NotImplementedException();
     }
 
-    public Task Initialize()
+    public async Task Initialize()
     {
-        throw new System.NotImplementedException();
+        await Task.Delay(3000);
     }
 
     public void SaveValue(string name, object value)

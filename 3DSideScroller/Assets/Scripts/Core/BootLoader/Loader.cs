@@ -1,45 +1,67 @@
 using LevelManagerLoader;
+using SideScroller;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Loader : MonoBehaviour
 {
     [SerializeField] private GameObject m_canvas;
 
-    private List<IService> services = new List<IService>();
+    [SerializeField] private Image m_loadbarImage;
+
+    private int m_loadingStep = 0;
+    private int m_loadStepsAmout = 3;
 
     private async void Start()
     {
+        ServiceProvider.Initialize();
+
+        m_loadbarImage.fillAmount = 0f;
+
         ServicePlatform platform = GetCurrentPlaform();
 
-        IInternetService internetService = GetInternetService(platform);
+        IInternetService internetService = new InternetService();
         await StartService(internetService);
 
         Debug.Log($"IsConnected {internetService.IsConnected}");
+        //TODO: HOME TASK - Fix an issue with the InternetService that always returns a false;
+
         if(internetService.IsConnected)
         {
             
         }
 
-        ISavesService savesService = new PlayerPrefsSavesService();
+        ISavesService savesService = new PlayerPrefsSavesService(); //Dummy
         await StartService(savesService);
      
-        PlayfabAccountService playfabAccount = new PlayfabAccountService(internetService, savesService);
+        PlayfabAccountService playfabAccount = new PlayfabAccountService(internetService, savesService); //Dummy
         IAccountService accountService = playfabAccount;
         ISavesService accountSaveService = playfabAccount;
         await StartService(playfabAccount);
+
+     
 
         LevelManager.Init();
         LevelManager.LoadLevelByNum(LevelGroupType.Menu, 1);
         LevelManagerData.UnlockNextLevels(LevelGroupType.Classic, 2);
     }
 
-    private async Task StartService(IService service)
+    private async Task StartService<T>(T service) where T : IService
     {
         await service.Initialize();
-        services.Add(service);
+        ServiceProvider.Register(service);
+        IncrementLoading();
+    }
+
+    private void IncrementLoading()
+    {
+        m_loadingStep++;
+        float fillAmout = (float)m_loadingStep / (float)m_loadStepsAmout;
+        m_loadbarImage.fillAmount = fillAmout;
     }
 
     private ServicePlatform GetCurrentPlaform()
@@ -57,27 +79,10 @@ public class Loader : MonoBehaviour
 #endif
         return ServicePlatform.None;
     }
-    //fix function to get created new internet service instead of basic internet service
-    private IInternetService GetInternetService(ServicePlatform servicePlatform)
-    {
-        if (servicePlatform == ServicePlatform.Steam)
-        {
-            return new SteamInternetService();
-        }
-
-        if (servicePlatform == ServicePlatform.Epic)
-        {
-            return new EpicGamesInternetService();
-        }
-
-        return new BasicInternetService();
-    }
 
     private void ShutDown()
     {
-        foreach (var service in services)
-        {
-            service.Shutdown();
-        }
+        IInternetService internetService = ServiceProvider.GetService<IInternetService>();
+        internetService.Shutdown();
     }
 }
