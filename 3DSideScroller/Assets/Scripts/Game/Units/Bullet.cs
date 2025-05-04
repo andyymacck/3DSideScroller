@@ -6,7 +6,7 @@ namespace SideScroller
     {
         [SerializeField] private Rigidbody m_rigidBody;
         [SerializeField] private float m_lifeTime = 4f;
-        [SerializeField] private float m_damage = 5f;
+        [SerializeField] private int m_damage = 5;
         [SerializeField] private float m_speed = 5f;
 
         void Start()
@@ -19,7 +19,7 @@ namespace SideScroller
             m_rigidBody.velocity = direction * m_speed;
         }
 
-        public void SetDamage(float damage)
+        public void SetDamage(int damage)
         {
             m_damage = damage;
         }

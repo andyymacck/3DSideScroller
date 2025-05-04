@@ -1,9 +1,11 @@
 using UnityEngine;
+using System;
 
-public abstract class CollectableModel
+[Serializable]
+public class CollectableModel
 {
-    private int count;
-    private CollectabeType type;
+    [SerializeField] private int count = 1;
+    [SerializeField] private CollectabeType type;
 
     public CollectabeType CollectabeType => type;
     public int Count => count;
@@ -24,8 +26,12 @@ public abstract class CollectableModel
         this.count--;
     }
 
-    public abstract void ApplyEffect(GameObject player);
+    public virtual void ApplyEffect(GameObject player)
+    {
+        Debug.Log("ApplyEffect" + Count);
+    }
 }
+
 
 public class GemModel : CollectableModel
 {
@@ -40,9 +46,11 @@ public class GemModel : CollectableModel
     {
         // For example, increase player's score
         Debug.Log("Increasing score by: " + Count);
+        //base.ApplyEffect(player);
     }
 }
 
+[System.Serializable]
 public class CoinModel : CollectableModel
 {
     public CoinModel(CollectabeType type, int count) : base(type, count) { }
@@ -85,4 +93,3 @@ public class HealthModel : CollectableModel
         Debug.Log("Increasing health by: " + healthPoints);
     }
 }
-

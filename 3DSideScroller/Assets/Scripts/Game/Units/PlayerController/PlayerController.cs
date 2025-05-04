@@ -1,5 +1,4 @@
 using System;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace SideScroller
@@ -12,7 +11,7 @@ namespace SideScroller
         [SerializeField] private PlayerAnimationController m_animationController;
         [SerializeField] private float m_forceMovement = 2f;
         [SerializeField] private float m_forceJump = 2f;
-        [SerializeField] private float m_attackDamage = 1f; // Define player's attack damage
+        [SerializeField] private int m_attackDamage = 1; // Define player's attack damage
         [SerializeField] private float m_distToFight = 2f; // cosnt
         [Space]
         [SerializeField] private CatmullRomGenPoints m_path;
@@ -51,6 +50,7 @@ namespace SideScroller
         {
             EventHub.Instance.Subscribe<TeleportEvent>(OnTeleport);
             EventHub.Instance.Subscribe<LevelFinishedEvent>(OnLevelFinish);
+            EventHub.Instance.Subscribe<CollectItemApprovalEvent>(CollectItemApprovalEvent);
 
             EventHub.Instance.Publish(new HealthChangeEvent(m_healthCurrent, m_healthOnStart));
 
@@ -59,6 +59,13 @@ namespace SideScroller
 
             m_path.GetNearestPosOfDist(transform.position, out m_foundDist, out bool isFound, 1f);
             m_pathPosition = Math.Clamp(m_foundDist, 0f, m_pathLength);
+        }
+
+        private void CollectItemApprovalEvent(CollectItemApprovalEvent eventData)
+        {
+            CollectableItem collectableItem = eventData.CollectableItem;
+            Debug.Log($"CollectItemApprovalEvent {collectableItem.Collectable.CollectabeType}");
+            eventData.Callback?.Invoke(collectableItem);
         }
 
         void FixedUpdate()
@@ -228,7 +235,7 @@ namespace SideScroller
             }
         }
 
-        public override void DealDamage(float damage)
+        public override void DealDamage(int damage)
         {
             if (!m_isAlive)
             {

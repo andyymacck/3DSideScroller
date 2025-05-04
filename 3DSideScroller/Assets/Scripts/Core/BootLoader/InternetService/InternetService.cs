@@ -34,7 +34,7 @@ using UnityEngine;
             ServiceState = ServiceState.Created;
         }
 
-        public async Task InitializeAsync()
+        public async Task Initialize()
         {
             m_client = new HttpClient
             {
@@ -164,11 +164,6 @@ using UnityEngine;
                 m_isConnected = hasConnection;
                 Debug.Log($"Internet Connected = {hasConnection}"); // Use UnityEngine.Debug
             }
-        }
-
-        public Task Initialize()
-        {
-            return Task.CompletedTask;  // Return Task.CompletedTask
         }
 
         public void Shutdown()

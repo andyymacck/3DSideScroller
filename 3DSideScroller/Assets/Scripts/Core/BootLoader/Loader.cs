@@ -1,8 +1,4 @@
 using LevelManagerLoader;
-using SideScroller;
-using System;
-using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
@@ -42,8 +38,6 @@ public class Loader : MonoBehaviour
         IAccountService accountService = playfabAccount;
         ISavesService accountSaveService = playfabAccount;
         await StartService(playfabAccount);
-
-     
 
         LevelManager.Init();
         LevelManager.LoadLevelByNum(LevelGroupType.Menu, 1);

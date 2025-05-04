@@ -6,7 +6,7 @@ namespace SideScroller
     {
         [Header("Attack parameters")]
         [SerializeField] protected float m_idleRange = 12f; // Distance to stop chasing
-        [SerializeField] protected float m_damage = 5f; // Damage per laser
+        [SerializeField] protected int m_damage = 1; // Damage per laser
 
         protected EnemyManager m_enemyManager;
         protected GameObject m_playerObject;

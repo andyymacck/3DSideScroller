@@ -2,10 +2,11 @@ using UnityEngine;
 
 public class CollectableItem : MonoBehaviour
 {
-    [SerializeField] private CollectabeType m_type;
-    //if you want ot use color you can use color code as sring
+    [SerializeField] private bool m_isRequiredCallback = false;
+    [SerializeField] private CollectableModel m_collectable;
 
-    public CollectabeType Type => m_type;
+    public CollectableModel Collectable => m_collectable;
+    public bool IsRequiredCallback => m_isRequiredCallback;
 
 
     public void Collect()

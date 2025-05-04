@@ -49,7 +49,7 @@ namespace SideScroller
             }
         }
 
-        public override void DealDamage(float damage)
+        public override void DealDamage(int damage)
         {
             if (!m_isAlive)
             {

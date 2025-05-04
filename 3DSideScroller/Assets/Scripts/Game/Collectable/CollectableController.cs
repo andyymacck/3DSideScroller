@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.ProBuilder.MeshOperations;
 
 namespace SideScroller
 {
@@ -33,25 +35,38 @@ namespace SideScroller
                 
                 if (collectableItem != null)
                 {
-                    AddCollectabe(collectableItem);
-                    collectableItem.Collect();
+                    if(collectableItem.IsRequiredCallback)
+                    {
+                        Action<CollectableItem> callback = (collectableItem) => Collect(collectableItem);
+                        EventHub.Instance.Publish(new CollectItemApprovalEvent(callback, collectableItem));
+                    }
+                    else
+                    {
+                        Collect(collectableItem);
+                    }
                 }
             }
         }
 
+        private void Collect(CollectableItem collectableItem)
+        {
+            AddCollectabe(collectableItem);
+            collectableItem.Collect();
+        }
+
         private void AddCollectabe(CollectableItem collectableItem)
         {
-            if (m_collectedItems.TryGetValue(collectableItem.Type, out CollectableModel collectable))
+            if (m_collectedItems.TryGetValue(collectableItem.Collectable.CollectabeType, out CollectableModel collectable))
             {
                 collectable.IncrementCount();
             }
             else
             {
-                CollectableModel newItem = CreateModel(collectableItem.Type);
+                CollectableModel newItem = CreateModel(collectableItem.Collectable.CollectabeType);
 
                 if(newItem != null)
                 {
-                    m_collectedItems.Add(collectableItem.Type, newItem);
+                    m_collectedItems.Add(collectableItem.Collectable.CollectabeType, newItem);
                 }
             }
 

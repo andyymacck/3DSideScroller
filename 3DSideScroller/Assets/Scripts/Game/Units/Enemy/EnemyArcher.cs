@@ -57,7 +57,7 @@ namespace SideScroller
             return Time.time >= m_lastAttackTime + m_attackDelay;
         }
 
-        public override void DealDamage(float damage)
+        public override void DealDamage(int damage)
         {
             if (!m_isAlive)
             {
