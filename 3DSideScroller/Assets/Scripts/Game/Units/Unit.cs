@@ -18,6 +18,8 @@ namespace SideScroller
 
         public abstract void DealDamage(int damage);
 
+        public abstract void Heal(int amout);
+
         public abstract void Die();
 
     }

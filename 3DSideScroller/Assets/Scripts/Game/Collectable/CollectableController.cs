@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.ProBuilder.MeshOperations;
 
 namespace SideScroller
 {
@@ -10,6 +9,10 @@ namespace SideScroller
         [SerializeField] PlayerController m_playerController;
 
         private readonly Dictionary<CollectabeType, CollectableModel> m_collectedItems = new Dictionary<CollectabeType, CollectableModel>();
+
+        /// <summary>
+        /// Add Save and Load to save all collectable data. You can use json to save and load m_collectedItems
+        /// </summary>
 
         void Start()
         {
@@ -70,7 +73,6 @@ namespace SideScroller
                 }
             }
 
-
             EventHub.Instance.Publish(new CollectItemEvent(m_collectedItems));
         }
 
@@ -78,14 +80,14 @@ namespace SideScroller
         {
             switch(collectabeType)
             {
-                case CollectabeType.Bomb:
-                    return new GemModel(CollectabeType.Bomb, 1, "RR");
+                case CollectabeType.Coin:
+                    return new CoinModel(CollectabeType.Coin, 1);
                 case CollectabeType.Gem:
                     return new GemModel(CollectabeType.Gem, 1, "RR");
                 case CollectabeType.Potion:
-                    return new GemModel(CollectabeType.Potion, 1, "RR");
+                    return new PotionModel(CollectabeType.Potion, 1, "RR");
                 case CollectabeType.Health:
-                    return new GemModel(CollectabeType.Health, 1, "RR");
+                    return new HealthModel(CollectabeType.Health, 1);
                 default:
                     return null;
             }

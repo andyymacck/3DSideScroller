@@ -90,5 +90,10 @@ namespace SideScroller
             bullet.ApplyMovement(direction.normalized);
             bullet.SetDamage(m_damage);
         }
+
+        public override void Heal(int amout)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

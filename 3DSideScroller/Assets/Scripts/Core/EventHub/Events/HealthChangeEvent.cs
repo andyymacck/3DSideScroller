@@ -1,9 +1,9 @@
 public class HealthChangeEvent : BaseEvent
 {
-    public float CurrentHealth { get; }
-    public float MaxHealth { get; }
+    public int CurrentHealth { get; }
+    public int MaxHealth { get; }
 
-    public HealthChangeEvent(float currentHealth, float maxHealth)
+    public HealthChangeEvent(int currentHealth, int maxHealth)
     {
         CurrentHealth = currentHealth;
         MaxHealth = maxHealth;

@@ -8,8 +8,6 @@ namespace SideScroller
     public class CanvasManager : MonoBehaviour
     {
         [SerializeField] private GameObject m_root;
-        [SerializeField] private Image m_healthBar;
-        [SerializeField] private TMP_Text m_healthText;
         [SerializeField] private ImageFade m_imageFade;
         [SerializeField] private GameOverMenu m_gameOverMenu;
         [SerializeField] private PauseMenu m_pauseMenu;
@@ -20,7 +18,6 @@ namespace SideScroller
 
         private void Awake()
         {
-            EventHub.Instance.Subscribe<HealthChangeEvent>(UpdateHealth);
             EventHub.Instance.Subscribe<ScreenFadeEvent>(ScreenFade);
             EventHub.Instance.Subscribe<GameOverEvent>(OnGameOver);
             EventHub.Instance.Subscribe<LevelFinishedEvent>(OnLevelFinished);
@@ -33,7 +30,6 @@ namespace SideScroller
 
         private void OnDestroy()
         {
-            EventHub.Instance.UnSubscribe<HealthChangeEvent>(UpdateHealth);
             EventHub.Instance.UnSubscribe<ScreenFadeEvent>(ScreenFade);
 
             EventHub.Instance.UnSubscribe<GameOverEvent>(OnGameOver);
@@ -68,12 +64,6 @@ namespace SideScroller
            m_finishMenu.Show();
         }
 
-        private void UpdateHealth(HealthChangeEvent eventData)
-        {
-            float healthFactor = eventData.CurrentHealth / eventData.MaxHealth;
-            m_healthBar.fillAmount = healthFactor;
-            m_healthText.text = $"{eventData.CurrentHealth} / {eventData.MaxHealth}";
-        }
 
         private void ScreenFade(ScreenFadeEvent eventData)
         {

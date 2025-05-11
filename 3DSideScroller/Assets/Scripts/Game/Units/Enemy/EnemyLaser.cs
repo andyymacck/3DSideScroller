@@ -104,5 +104,10 @@ namespace SideScroller
             yield return new WaitForSeconds(0.3f);
             m_lineRenderer.enabled = false;
         }
+
+        public override void Heal(int amout)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

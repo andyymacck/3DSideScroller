@@ -90,5 +90,10 @@ namespace SideScroller
             m_enemyManager.RemoveEnemy(this);
             Destroy(gameObject);
         }
+
+        public override void Heal(int amout)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

@@ -1,7 +1,7 @@
 public enum CollectabeType
 {
     None = 0,
-    Bomb = 101,
+    Coin = 101,
     Gem = 102,
 
     Potion = 201,

@@ -63,9 +63,13 @@ namespace SideScroller
 
         private void CollectItemApprovalEvent(CollectItemApprovalEvent eventData)
         {
-            CollectableItem collectableItem = eventData.CollectableItem;
-            Debug.Log($"CollectItemApprovalEvent {collectableItem.Collectable.CollectabeType}");
-            eventData.Callback?.Invoke(collectableItem);
+            if(m_healthCurrent < m_healthMax && eventData.CollectableItem.Collectable.CollectabeType == CollectabeType.Health)
+            {
+                CollectableItem collectableItem = eventData.CollectableItem;
+                Debug.Log($"CollectItemApprovalEvent {collectableItem.Collectable.CollectabeType}");
+                eventData.Approve();
+                Heal(collectableItem.Collectable.Count);
+            }
         }
 
         void FixedUpdate()
@@ -235,6 +239,18 @@ namespace SideScroller
             }
         }
 
+        public override void Heal(int amout)
+        {
+            m_healthCurrent += amout;
+
+            if (m_healthCurrent > m_healthMax)
+            {
+                m_healthCurrent = m_healthMax;
+            }
+
+            EventHub.Instance.Publish(new HealthChangeEvent(m_healthCurrent, m_healthMax));
+        }
+
         public override void DealDamage(int damage)
         {
             if (!m_isAlive)
@@ -303,6 +319,7 @@ namespace SideScroller
         {
             EventHub.Instance.UnSubscribe<TeleportEvent>(OnTeleport);
             EventHub.Instance.UnSubscribe<LevelFinishedEvent>(OnLevelFinish);
+            EventHub.Instance.UnSubscribe<CollectItemApprovalEvent>(CollectItemApprovalEvent);
         }
 
         private void StartDieFX()

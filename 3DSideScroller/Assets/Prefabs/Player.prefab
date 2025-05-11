@@ -49,8 +49,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfb51153b50945b4a901dff3bc9aed63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_healthCurrent: 100
-  m_healthOnStart: 100
+  m_healthMax: 5
+  m_healthCurrent: 4
+  m_healthOnStart: 4
   m_attackDelay: 1
   m_attackRange: 1
   m_rigidbody: {fileID: 6375278507248217860}

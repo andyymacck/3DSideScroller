@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 5728111164793408788}
   - component: {fileID: 3288617338890589014}
   - component: {fileID: 8731976374296354645}
+  - component: {fileID: 6947529574898463264}
   m_Layer: 0
   m_Name: Collectable-Stone4
   m_TagString: Collectable
@@ -97,10 +98,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 702ba92b8ff60bf4c9a3bef57e5a6e7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_isRequiredCallback: 1
+  m_isRequiredCallback: 0
   m_collectable:
     count: 1
-    type: 203
+    type: 102
 --- !u!65 &8731976374296354645
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -122,3 +123,17 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.42504942, y: 0.46349773, z: 0.4908048}
   m_Center: {x: 0, y: -0.05384852, z: 0.0000033676624}
+--- !u!114 &6947529574898463264
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 192482398752261487}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9004448d2c955de42867e28df4e65438, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_transform: {fileID: 2800143778273527175}
+  m_rotateSpeed: {x: 0, y: 35, z: 0}
