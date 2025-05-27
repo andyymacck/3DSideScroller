@@ -93,7 +93,7 @@ namespace SideScroller
             //EnemyLookup();
 
             if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D))
-            {
+            {  
                 Move(targetDirection);
                 SetState(PlayerStates.RunForward);
                 m_animationController.SetRotation(targetDirection);

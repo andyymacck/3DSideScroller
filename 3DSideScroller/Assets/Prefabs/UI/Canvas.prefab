@@ -834,7 +834,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3047283351563417281}
-  - component: {fileID: 4227466036474637201}
+  - component: {fileID: 5145531387930866115}
   m_Layer: 5
   m_Name: Collection
   m_TagString: Untagged
@@ -864,7 +864,7 @@ RectTransform:
   m_AnchoredPosition: {x: -124, y: -420}
   m_SizeDelta: {x: 500, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &4227466036474637201
+--- !u!114 &5145531387930866115
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -873,10 +873,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 2623265787993018610}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b020a7eb334829f4997e0f3d00bad403, type: 3}
+  m_Script: {fileID: 11500000, guid: 827c28217fa08b74aa21788a161839e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_viewType: 102
   m_referenceObject: {fileID: 1113878513947223342}
   m_transform: {fileID: 3047283351563417281}
   m_offsetItem: 100
@@ -891,7 +890,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5459516482733874620}
-  - component: {fileID: 522956828310620507}
+  - component: {fileID: 8254602407056716620}
   m_Layer: 5
   m_Name: Health
   m_TagString: Untagged
@@ -921,7 +920,7 @@ RectTransform:
   m_AnchoredPosition: {x: -638, y: -420}
   m_SizeDelta: {x: 500, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &522956828310620507
+--- !u!114 &8254602407056716620
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -930,7 +929,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2932757819466173441}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2ec56a4fdf5b2714b8fd8b7ed72537fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 827c28217fa08b74aa21788a161839e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_referenceObject: {fileID: 4349774519806247995}
@@ -2799,6 +2798,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6089962502590130330}
+  - component: {fileID: 1533993249444650571}
   m_Layer: 5
   m_Name: InGameMenu
   m_TagString: Untagged
@@ -2829,6 +2829,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 540}
   m_SizeDelta: {x: -1820, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1533993249444650571
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7591277074900832331}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc6f639b78645c44bb5daf0836d86a06, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_healthBar: {fileID: 8254602407056716620}
+  m_collectables: {fileID: 5145531387930866115}
 --- !u!1 &7623813524441777013
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,13 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HealthBar : MonoBehaviour
+public class ProgressBarInt : MonoBehaviour
 {
-    // Exctract bar functionality to the separate extarnal class. That can be reused for any bar in the game
-    // This kind of bar using int value to spawn the objects.
-    // You need to create a float bar with the image fill for the same purpose.
-
-    // When it is done. Move sunbcribe to the InGameMenu
     [SerializeField] private GameObject m_referenceObject; // Prefab to instantiate
     [SerializeField] private Transform m_transform; // Parent transform for spawned objects
     [SerializeField] private float m_offsetItem; // Offset between spawned objects
@@ -16,24 +11,14 @@ public class HealthBar : MonoBehaviour
 
     private List<GameObject> m_spawnedObjects = new List<GameObject>();
 
-    private void Start()
-    {
-        EventHub.Instance.Subscribe<HealthChangeEvent>(UpdateHealth);
-    }
 
-    private void OnDestroy()
-    {
-        EventHub.Instance.UnSubscribe<HealthChangeEvent>(UpdateHealth);
-    }
-
-    // "update view"
-    private void UpdateHealth(HealthChangeEvent eventData)
+    public void UpdateBar(int maxAmount, int currentAmount)
     {
         ClearView();
 
-        m_countMax = eventData.MaxHealth;
+        m_countMax = maxAmount;
 
-        int count = Mathf.Clamp(eventData.CurrentHealth, 0, m_countMax);
+        int count = Mathf.Clamp(currentAmount, 0, m_countMax);
 
         for (int i = 0; i < count; i++)
         {
