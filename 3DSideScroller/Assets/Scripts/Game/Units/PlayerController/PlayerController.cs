@@ -53,7 +53,7 @@ namespace SideScroller
             EventHub.Instance.Subscribe<CollectItemApprovalEvent>(CollectItemApprovalEvent);
 
             EventHub.Instance.Publish(new HealthChangeEvent(m_healthCurrent, m_healthOnStart));
-
+            //
             m_path.GenWay();
             m_pathLength = m_path.GetPathLength();
 
@@ -71,7 +71,6 @@ namespace SideScroller
                 Heal(collectableItem.Collectable.Count);
             }
         }
-
         void FixedUpdate()
         {
             if (m_state == PlayerStates.Win)
@@ -81,34 +80,39 @@ namespace SideScroller
 
             float lookupRange = 2f;
 
-
-            m_path.GetClosestPosOfDist(transform.position, m_pathPosition, lookupRange, out m_foundDist, out bool isFound, 0.1f);
-            m_pathPosition = Math.Clamp(m_foundDist, 0f, m_pathLength);
-
-            Vector3 targetPosition = m_path.GetPosByDist(m_pathPosition);
-            Vector3 targetDirection = m_path.GetDirByDist(m_pathPosition);
-
-            transform.position = new Vector3(targetPosition.x, transform.position.y, targetPosition.z);
-
-            //EnemyLookup();
-
-            if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D))
-            {  
-                Move(targetDirection);
-                SetState(PlayerStates.RunForward);
-                m_animationController.SetRotation(targetDirection);
-            }
-            else if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))
+            if (m_path != null)
             {
-                Move(-targetDirection);
-                SetState(PlayerStates.RunForward);
-                m_animationController.SetRotation(-targetDirection);
+                m_path.GetClosestPosOfDist(transform.position, m_pathPosition, lookupRange, out m_foundDist, out bool isFound, 0.1f);
+                m_pathPosition = Math.Clamp(m_foundDist, 0f, m_pathLength);
+
+                Vector3 targetPosition = m_path.GetPosByDist(m_pathPosition);
+                Vector3 targetDirection = m_path.GetDirByDist(m_pathPosition);
+
+                transform.position = new Vector3(targetPosition.x, transform.position.y, targetPosition.z);
+
+                if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D))
+                {
+                    Move(targetDirection);
+                    SetState(PlayerStates.RunForward);
+                    m_animationController.SetRotation(targetDirection);
+                }
+                else if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))
+                {
+                    Move(-targetDirection);
+                    SetState(PlayerStates.RunForward);
+                    m_animationController.SetRotation(-targetDirection);
+                }
+                else if (m_isGrounded)
+                {
+                    SetState(PlayerStates.Idle);
+                }
             }
-            else if (m_isGrounded)
+            else
             {
-                SetState(PlayerStates.Idle);
+                Debug.LogWarning("PlayerController: m_path is null. Assign a Path object in the Inspector or via script.");
             }
         }
+
 
         private void Update()
         {
@@ -189,6 +193,7 @@ namespace SideScroller
             {
                 m_jumpCount = 0;
                 m_isGrounded = true;
+                m_animationController.SetIsGrounded(true);
             }
         }
 
@@ -197,6 +202,7 @@ namespace SideScroller
             if (IsCollided(collision, Constants.GROUNG_TAG_ID) || IsCollided(collision, Constants.PLATFORM_TAG_ID))
             {
                 m_isGrounded = false;
+                m_animationController.SetIsGrounded(false);
             }
         }
 

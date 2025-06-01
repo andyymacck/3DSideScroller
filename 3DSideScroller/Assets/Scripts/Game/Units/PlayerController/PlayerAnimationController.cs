@@ -12,9 +12,9 @@ namespace SideScroller
         private RotationStates m_rotationState;
 
         private const string STATE_IDLE_TRIGGER = "Idle";
-        private const string STATE_RUN_TRIGGER = "Run";
         private const string STATE_JUMP_TRIGGER = "Jump";
         private const string BLEND_PARAM = "RunBlend";
+        private const string IS_GROUNDED_PARAM = "isGrounded";
 
         private const float BLEND_TIME = 0.2f;
 
@@ -23,12 +23,6 @@ namespace SideScroller
         void Start()
         {
             m_playerController.OnplayerStateChangedEvent += AnimationStateChange;
-        }
-
-
-        void Update()
-        {
-
         }
 
         private void OnDestroy()
@@ -78,16 +72,23 @@ namespace SideScroller
             }
         }
 
+        public void SetIsGrounded(bool isGrounded)
+        {
+            m_animator.SetBool(IS_GROUNDED_PARAM, isGrounded);
+        }
+
         private void SetBlendParam(float blend)
         {
             if (m_blendCoroutine != null)
             {
                 StopCoroutine(m_blendCoroutine);
+                m_blendCoroutine = null;
             }
 
             m_blendCoroutine = StartCoroutine(SmoothAnimationBlend(blend));
         }
-        
+
+
         private IEnumerator SmoothAnimationBlend(float targetValue)
         {
             float startValue = m_animator.GetFloat(BLEND_PARAM);
@@ -107,13 +108,15 @@ namespace SideScroller
             m_animator.SetFloat(BLEND_PARAM, targetValue);
         }
 
-        private void SetIdle()
+        public void SetIdle()
         {
+            m_animator.ResetTrigger(STATE_JUMP_TRIGGER);
             m_animator.SetTrigger(STATE_IDLE_TRIGGER);
         }
 
         private void SetJump()
         {
+            m_animator.ResetTrigger(STATE_IDLE_TRIGGER);
             m_animator.SetTrigger(STATE_JUMP_TRIGGER);
         }
     }
