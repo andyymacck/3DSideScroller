@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 namespace SideScroller
@@ -9,6 +10,7 @@ namespace SideScroller
         [SerializeField] private Rigidbody m_rigidbody;
         [SerializeField] private Transform m_transform;
         [SerializeField] private PlayerAnimationController m_animationController;
+        [SerializeField] private GameObject m_weapon;
         [SerializeField] private float m_forceMovement = 2f;
         [SerializeField] private float m_forceJump = 2f;
         [SerializeField] private int m_attackDamage = 1; // Define player's attack damage
@@ -25,6 +27,7 @@ namespace SideScroller
         private int m_jumpCount = 0;
         private int m_jumpCountTotal = 0;
         private bool m_isGrounded = true;
+        private bool m_isPunching = false;
         private PlayerStates m_state;
 
         public Vector3 PlayerVelocity => m_rigidbody.velocity;
@@ -59,6 +62,7 @@ namespace SideScroller
 
             m_path.GetNearestPosOfDist(transform.position, out m_foundDist, out bool isFound, 1f);
             m_pathPosition = Math.Clamp(m_foundDist, 0f, m_pathLength);
+            m_weapon.SetActive(false);
         }
 
         private void CollectItemApprovalEvent(CollectItemApprovalEvent eventData)
@@ -131,7 +135,13 @@ namespace SideScroller
                 OnClickAttack();
             }
 
-           //CalculateRotation();
+
+            if (Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.E)) // Change key as needed
+            {
+                Punch();
+            }
+
+            //CalculateRotation();
         }
 
         public void SetEnemyManager(EnemyManager manager)
@@ -167,6 +177,34 @@ namespace SideScroller
             {
                 //m_animationController.SetRotation(RotationStates.Right);
             }
+        }
+
+        private void Punch()
+        {
+            if (!m_isPunching)
+            {
+                StartCoroutine(PunchCoroutine());
+            }
+        }
+
+        private IEnumerator PunchCoroutine()
+        {
+            //Start of punch
+            m_animationController.TrigerPunch();
+            m_isPunching = true;
+
+            yield return new WaitForSeconds(0.6f);
+
+            //middle on punch
+
+            m_weapon.SetActive(true);
+
+
+            yield return new WaitForSeconds(0.3f);
+
+            //end of punch
+            m_weapon.SetActive(false);
+            m_isPunching = false;
         }
 
         private void Jump()

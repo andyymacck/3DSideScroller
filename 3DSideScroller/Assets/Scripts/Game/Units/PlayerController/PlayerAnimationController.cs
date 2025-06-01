@@ -13,6 +13,7 @@ namespace SideScroller
 
         private const string STATE_IDLE_TRIGGER = "Idle";
         private const string STATE_JUMP_TRIGGER = "Jump";
+        private const string STATE_PUNCH_TRIGGER = "Punch";
         private const string BLEND_PARAM = "RunBlend";
         private const string IS_GROUNDED_PARAM = "isGrounded";
 
@@ -112,6 +113,11 @@ namespace SideScroller
         {
             m_animator.ResetTrigger(STATE_JUMP_TRIGGER);
             m_animator.SetTrigger(STATE_IDLE_TRIGGER);
+        }
+
+        public void TrigerPunch()
+        {
+            m_animator.SetTrigger(STATE_PUNCH_TRIGGER);
         }
 
         private void SetJump()
