@@ -16,7 +16,7 @@ namespace SideScroller
 
         [SerializeField] private Rigidbody m_rigidbody;
         [SerializeField] private Transform m_rootTransform;
-        [SerializeField] private float m_moveSpeed = 100f;
+        [SerializeField] private float m_moveForce= 100f;
         [SerializeField] private Waypoint[] m_wayPoints = new Waypoint[] { };
 
         [SerializeField] private PlatformMove m_loopMode;
@@ -30,21 +30,31 @@ namespace SideScroller
 
         public void MoveToObject(GameObject gameObject)
         {
-            Vector3 dir = (gameObject.transform.position - transform.position).normalized;
-            m_rigidbody.AddForce(new Vector3(dir.x, 0f, 0f) * m_moveSpeed);
+            Vector3 diff = gameObject.transform.position - transform.position;
+            Vector3 dir = diff.normalized;
+            m_rigidbody.AddForce(new Vector3(dir.x, 0f, dir.z) * m_moveForce * Time.fixedDeltaTime * 100f);
 
-            SetRotation(gameObject.transform);
+            if (diff.magnitude > 1f)
+            {
+                SetRotation(gameObject.transform);
+            }  
         }
 
         private void MoveToPosition(Vector3 position)
         {
-            Vector3 dir = (position - transform.position).normalized;
-            m_rigidbody.AddForce(new Vector3(dir.x, 0f, 0f) * m_moveSpeed);
+            Vector3 diff = position - transform.position;
+            Vector3 dir = diff.normalized;
 
-            SetRotation(position);
+            m_rigidbody.AddForce(new Vector3(dir.x, 0f, dir.z) * m_moveForce * Time.fixedDeltaTime * 100f);
+
+            if (diff.magnitude > 1f)
+            {
+                SetRotation(position);
+            }     
         }
 
-        public void SetRotation(RotationStates rotationStates)
+        
+        /*public void SetRotation(RotationStates rotationStates)
         {
             if (m_rotationState == rotationStates)
             {
@@ -55,7 +65,7 @@ namespace SideScroller
             Vector3 currentRotation = m_rootTransform.localRotation.eulerAngles;
             currentRotation.y = rotationStates == RotationStates.Right ? 0 : 180;
             m_rootTransform.localRotation = Quaternion.Euler(currentRotation);
-        }
+        }*/
 
         public void SetRotation(Transform targetTransform)
         {
@@ -69,10 +79,10 @@ namespace SideScroller
 
         public void SetRotation(Vector3 position)
         {
-            Vector3 dir = position - transform.position;
-
-            RotationStates rotationState = dir.x > 0f ? RotationStates.Right : RotationStates.Left;
-            SetRotation(rotationState);
+            Vector3 dir = (position - transform.position).normalized;
+            dir.y = 0f;
+            m_rootTransform.localRotation = Quaternion.LookRotation(dir);
+            UnityEngine.Debug.Log(dir);
         }
 
         public void Patrol()

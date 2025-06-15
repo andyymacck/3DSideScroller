@@ -120,6 +120,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5e4b0f0d5830c84fba68b9c739245f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_damage: 25
 --- !u!1 &8475297989337998687
 GameObject:
   m_ObjectHideFlags: 0
@@ -130,6 +131,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7159730535521688664}
   - component: {fileID: 9125655489681550791}
+  - component: {fileID: 6543835354853068194}
   - component: {fileID: 7896185648049691060}
   - component: {fileID: 21466500254660528}
   - component: {fileID: 6375278507248217860}
@@ -182,10 +184,24 @@ MonoBehaviour:
   m_forceJump: 100
   m_attackDamage: 50
   m_distToFight: 2
+  m_pathAgent: {fileID: 6543835354853068194}
+--- !u!114 &6543835354853068194
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8475297989337998687}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5cb4b0c955725413bafb3ccebcc61346, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   m_path: {fileID: 0}
   m_pathPosition: 0
-  m_foundDist: 0
-  m_pathLength: 0
+  m_searchStep: 0.1
+  m_searchRange: 2
+  m_distanceMode: 2
 --- !u!114 &7896185648049691060
 MonoBehaviour:
   m_ObjectHideFlags: 0

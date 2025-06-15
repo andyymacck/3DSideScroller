@@ -13,13 +13,10 @@ namespace SideScroller
         [SerializeField] private GameObject m_weapon;
         [SerializeField] private float m_forceMovement = 2f;
         [SerializeField] private float m_forceJump = 2f;
-        [SerializeField] private int m_attackDamage = 1; // Define player's attack damage
+        [SerializeField] private int m_attackDamage = 1;   // Define player's attack damage
         [SerializeField] private float m_distToFight = 2f; // cosnt
         [Space]
-        [SerializeField] private CatmullRomGenPoints m_path;
-        [SerializeField] private float m_pathPosition;
-        [SerializeField] private float m_foundDist;
-        [SerializeField] private float m_pathLength;
+        [SerializeField] private PathAgent m_pathAgent;
         protected EnemyManager m_enemyManager;
 
 
@@ -47,6 +44,15 @@ namespace SideScroller
 
             SetEnemyManager(manager);
             SetState(PlayerStates.Idle);
+            
+            if (m_pathAgent == null)
+            {
+                m_pathAgent = GetComponent<PathAgent>();
+                if (m_pathAgent == null)
+                {
+                    m_pathAgent = gameObject.AddComponent<PathAgent>();
+                }
+            }
         }
 
         private void Start()
@@ -56,18 +62,18 @@ namespace SideScroller
             EventHub.Instance.Subscribe<CollectItemApprovalEvent>(CollectItemApprovalEvent);
 
             EventHub.Instance.Publish(new HealthChangeEvent(m_healthCurrent, m_healthOnStart));
-            //
-            m_path.GenWay();
-            m_pathLength = m_path.GetPathLength();
 
-            m_path.GetNearestPosOfDist(transform.position, out m_foundDist, out bool isFound, 1f);
-            m_pathPosition = Math.Clamp(m_foundDist, 0f, m_pathLength);
+            if (m_pathAgent != null)
+            {
+                m_pathAgent.FindPositionOnPath(transform.position);
+            }
+
             m_weapon.SetActive(false);
         }
 
         private void CollectItemApprovalEvent(CollectItemApprovalEvent eventData)
         {
-            if(m_healthCurrent < m_healthMax && eventData.CollectableItem.Collectable.CollectabeType == CollectabeType.Health)
+            if (m_healthCurrent < m_healthMax && eventData.CollectableItem.Collectable.CollectabeType == CollectabeType.Health)
             {
                 CollectableItem collectableItem = eventData.CollectableItem;
                 Debug.Log($"CollectItemApprovalEvent {collectableItem.Collectable.CollectabeType}");
@@ -75,52 +81,44 @@ namespace SideScroller
                 Heal(collectableItem.Collectable.Count);
             }
         }
+
         void FixedUpdate()
         {
-            if (m_state == PlayerStates.Win)
+            if (m_state == PlayerStates.Win || m_pathAgent == null)
             {
                 return;
             }
 
             float lookupRange = 2f;
+            m_pathAgent.FindClosestPositionInRange(transform.position, lookupRange);
 
-            if (m_path != null)
+            Vector3 targetPosition = m_pathAgent.GetCurrentPosition();
+            Vector3 targetDirection = m_pathAgent.GetCurrentDirection();
+
+            transform.position = new Vector3(targetPosition.x, transform.position.y, targetPosition.z);
+
+            if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D))
             {
-                m_path.GetClosestPosOfDist(transform.position, m_pathPosition, lookupRange, out m_foundDist, out bool isFound, 0.1f);
-                m_pathPosition = Math.Clamp(m_foundDist, 0f, m_pathLength);
-
-                Vector3 targetPosition = m_path.GetPosByDist(m_pathPosition);
-                Vector3 targetDirection = m_path.GetDirByDist(m_pathPosition);
-
-                transform.position = new Vector3(targetPosition.x, transform.position.y, targetPosition.z);
-
-                if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D))
-                {
-                    Move(targetDirection);
-                    SetState(PlayerStates.RunForward);
-                    m_animationController.SetRotation(targetDirection);
-                }
-                else if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))
-                {
-                    Move(-targetDirection);
-                    SetState(PlayerStates.RunForward);
-                    m_animationController.SetRotation(-targetDirection);
-                }
-                else if (m_isGrounded)
-                {
-                    SetState(PlayerStates.Idle);
-                }
+                Move(targetDirection);
+                SetState(PlayerStates.RunForward);
+                m_animationController.SetRotation(targetDirection);
             }
-            else
+            else if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))
             {
-                Debug.LogWarning("PlayerController: m_path is null. Assign a Path object in the Inspector or via script.");
+                Move(-targetDirection);
+                SetState(PlayerStates.RunForward);
+                m_animationController.SetRotation(-targetDirection);
+            }
+            else if (m_isGrounded)
+            {
+                SetState(PlayerStates.Idle);
             }
         }
 
 
         private void Update()
         {
-           if (m_state == PlayerStates.Win)
+            if (m_state == PlayerStates.Win)
             {
                 return;
             }
@@ -140,8 +138,6 @@ namespace SideScroller
             {
                 Punch();
             }
-
-            //CalculateRotation();
         }
 
         public void SetEnemyManager(EnemyManager manager)
@@ -163,19 +159,10 @@ namespace SideScroller
         public void SetPosition(Vector3 position)
         {
             transform.position = position;
-        }
-
-        private void CalculateRotation()
-        {
-            if (m_currentEnemy != null)
+            
+            if (m_pathAgent != null)
             {
-                Vector3 positionDiff = m_currentEnemy.transform.position - m_transform.position;
-                RotationStates targetRotation = positionDiff.x > 0f ? RotationStates.Right : RotationStates.Left;
-                m_animationController.SetRotation(targetRotation);
-            }
-            else
-            {
-                //m_animationController.SetRotation(RotationStates.Right);
+                m_pathAgent.FindPositionOnPath(position);
             }
         }
 
@@ -198,8 +185,7 @@ namespace SideScroller
             //middle on punch
 
             m_weapon.SetActive(true);
-
-
+            
             yield return new WaitForSeconds(0.3f);
 
             //end of punch
@@ -209,7 +195,7 @@ namespace SideScroller
 
         private void Jump()
         {
-            if ((m_jumpCount < m_jumpLimit) || (m_isGrounded))
+            if (m_jumpCount < m_jumpLimit || m_isGrounded)
             {
                 Vector3 moveDir = Vector3.up;
                 m_rigidbody.AddForce(moveDir * m_forceJump, ForceMode.Impulse);
@@ -217,12 +203,23 @@ namespace SideScroller
                 m_jumpCount++;
                 m_jumpCountTotal++;
                 SetState(PlayerStates.Jump);
+                
+                m_isGrounded = false;
+                m_animationController.SetIsGrounded(false);
             }
         }
 
         private void Move(Vector3 direction)
         {
             m_rigidbody.AddForce(direction * m_forceMovement);
+
+            if (m_pathAgent != null)
+            {
+                if (Vector3.Dot(direction, m_pathAgent.GetCurrentDirection()) > 0)
+                    m_pathAgent.MoveForward(m_forceMovement * Time.deltaTime);
+                else
+                    m_pathAgent.MoveBackward(m_forceMovement * Time.deltaTime);
+            }
         }
 
         private void OnCollisionEnter(Collision collision)
@@ -232,6 +229,11 @@ namespace SideScroller
                 m_jumpCount = 0;
                 m_isGrounded = true;
                 m_animationController.SetIsGrounded(true);
+                
+                if (m_state == PlayerStates.Jump)
+                {
+                    SetState(PlayerStates.Idle);
+                }
             }
         }
 
@@ -258,13 +260,12 @@ namespace SideScroller
         {
             return collision.gameObject.CompareTag(name);
         }
-
-
+        
         private void EnemyLookup()
         {
             int enemyCount = m_enemyManager.EnemyList.Count;
             float minDist = m_distToFight;
-            
+
             m_currentEnemy = null;
 
             for (int i = 0; i < enemyCount; i++)
@@ -338,8 +339,8 @@ namespace SideScroller
             if (enemy == null) return false;
 
             float distance = Vector3.Distance(transform.position, enemy.transform.position);
-            
-           return distance <= distanceToCheck;
+
+            return distance <= distanceToCheck;
         }
 
         private bool CanAttack()
@@ -364,11 +365,6 @@ namespace SideScroller
             EventHub.Instance.UnSubscribe<TeleportEvent>(OnTeleport);
             EventHub.Instance.UnSubscribe<LevelFinishedEvent>(OnLevelFinish);
             EventHub.Instance.UnSubscribe<CollectItemApprovalEvent>(CollectItemApprovalEvent);
-        }
-
-        private void StartDieFX()
-        {
-
         }
 
         private void SetState(PlayerStates state)

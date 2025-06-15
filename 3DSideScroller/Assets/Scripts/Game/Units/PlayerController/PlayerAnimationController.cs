@@ -76,6 +76,11 @@ namespace SideScroller
         public void SetIsGrounded(bool isGrounded)
         {
             m_animator.SetBool(IS_GROUNDED_PARAM, isGrounded);
+            
+            if (isGrounded)
+            {
+                m_animator.ResetTrigger(STATE_JUMP_TRIGGER);
+            }
         }
 
         private void SetBlendParam(float blend)
